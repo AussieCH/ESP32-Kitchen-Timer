@@ -1,0 +1,7 @@
+.pio/
+tools/node_modules/
+tools/package-lock.json
+tools/package.json
+tools/sim/obj/
+tools/sim/sim
+tools/sim/out/
