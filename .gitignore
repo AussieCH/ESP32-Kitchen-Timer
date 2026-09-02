@@ -5,3 +5,4 @@ tools/package.json
 tools/sim/obj/
 tools/sim/sim
 tools/sim/out/
+tools/.fonts/

@@ -97,6 +97,9 @@ int main() {
   settle(200);
   shot("0-startbild");
   printf("[0-startbild]\n");
+  settle(4200);          // Startbild auslaufen lassen - sonst liegt es ueber
+                         // den naechsten Aufnahmen und die Anleitung zeigt
+                         // ueberall das Logo statt der Seite
 
   scene("1-aktiv-leer");
 
