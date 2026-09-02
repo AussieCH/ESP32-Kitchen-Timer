@@ -5,6 +5,7 @@
 #include <lvgl.h>
 #include "ui.h"
 #include "timers.h"
+#include "meater.h"
 
 static lv_color_t fb[SCR_W * SCR_H];
 static int violations = 0;
@@ -136,6 +137,12 @@ int main() {
   ui_goto(TILE_MEATER);
   ui_meater_update();
   scene("3e-fuehler");
+
+  extern void sim_meater_state(MeaterState);
+  sim_meater_state(MEATER_SEARCHING);    // ohne Fuehler: Logo statt Platzhalter
+  ui_meater_update();
+  scene("3g-fuehler-offline");
+  sim_meater_state(MEATER_CONNECTED);
 
   setting_set_meater_armed(true);        // scharf: Zieltemperatur im Bild
   ui_meater_update();

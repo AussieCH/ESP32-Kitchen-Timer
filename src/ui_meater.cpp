@@ -11,13 +11,14 @@
 #include "meater.h"
 #include "alarm.h"
 #include "haptics.h"
+#include "gen/logo_meater.h"
 
 #define TARGET_MIN 30
 #define TARGET_MAX 99
 #define TEMP_RGB   0xEE7C25        // Alarmfarbe: das Orange des Logos
 #define TEMP_MELODY 19             // "Alarm", aufsteigend
 
-static lv_obj_t *s_temp, *s_unit, *s_info, *s_state, *s_dot;
+static lv_obj_t *s_temp, *s_unit, *s_info, *s_state, *s_dot, *s_logo;
 static lv_obj_t *s_target_box, *s_target_lbl, *s_done_lbl, *s_btn;
 static bool s_fired = false;
 
@@ -71,6 +72,13 @@ void ui_meater_create(lv_obj_t *p) {
   lv_obj_set_style_text_font(s_unit, &lv_font_montserrat_20, 0);
   lv_obj_set_style_text_color(s_unit, col_dim(), 0);
 
+  // Ohne Verbindung stand hier "--.-" - das sieht nach Fehler aus. Stattdessen
+  // das Logo des Fuehlers: dann ist klar, worauf das Geraet wartet.
+  s_logo = lv_img_create(p);
+  lv_img_set_src(s_logo, &logo_meater);
+  lv_obj_align(s_logo, LV_ALIGN_CENTER, 0, -56);
+  lv_obj_add_flag(s_logo, LV_OBJ_FLAG_HIDDEN);
+
   s_info = lv_label_create(p);
   lv_obj_set_style_text_font(s_info, &lv_font_montserrat_14, 0);
   lv_obj_set_style_text_color(s_info, col_dim(), 0);
@@ -122,6 +130,8 @@ void ui_meater_update() {
   // lv_label_set_text_fmt kann keine Kommazahlen - deshalb selbst formatieren
   char buf[40];
   if (live) {
+    lv_obj_add_flag(s_logo, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(s_temp, LV_OBJ_FLAG_HIDDEN);
     snprintf(buf, sizeof(buf), "%.1f", meater_tip_c());
     lv_label_set_text(s_temp, buf);
     lv_obj_set_style_text_color(s_temp, ringing ? lv_color_hex(TEMP_RGB) : lv_color_white(), 0);
@@ -140,8 +150,8 @@ void ui_meater_update() {
       lv_obj_set_style_text_color(s_info, col_dim(), 0);
     }
   } else {
-    lv_label_set_text(s_temp, "--.-");
-    lv_obj_set_style_text_color(s_temp, col_dim(), 0);
+    lv_obj_add_flag(s_temp, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(s_logo, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(s_unit, LV_OBJ_FLAG_HIDDEN);
     lv_label_set_text(s_info, st == MEATER_SEARCHING ? "Fuehler aus der Ladeschale nehmen" : "");
     lv_obj_set_style_text_color(s_info, col_dim(), 0);

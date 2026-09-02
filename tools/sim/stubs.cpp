@@ -39,11 +39,13 @@ bool  battery_is_cell() { return true; }
 bool  battery_low() { return false; }
 
 void meater_init() {}
-MeaterState meater_state() { return MEATER_CONNECTED; }
+static MeaterState s_sim_meater = MEATER_CONNECTED;
+void sim_meater_state(MeaterState st) { s_sim_meater = st; }
+MeaterState meater_state() { return s_sim_meater; }
 float meater_tip_c() { return 62.4f; }
 float meater_ambient_c() { return 178.0f; }
 int meater_battery() { return 84; }
-uint32_t meater_age_ms() { return 1200; }
+uint32_t meater_age_ms() { return s_sim_meater == MEATER_CONNECTED ? 1200 : 999999; }
 const char *meater_name() { return "MEATER+"; }
 
 void app_apply_brightness(int) {}

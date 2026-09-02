@@ -233,6 +233,7 @@ src/leds.*           WS2812-Ring: Restzeit in der Timer-Farbe, Alarmblinken, Log
 src/battery.*        Spannungsmessung mit Ueberabtastung und Kennlinie
 src/meater.*         BLE-Client fuer das MEATER-Grill-Thermometer
 src/alarm.*          Alarmwirkung (Blinken, Haptik, Melodie, Ring) fuer beide Ausloeser
+assets/logos/        Quellbild fuers MEATER-Logo (tools/convert_image.py)
 src/timers.*         Datenmodell, Ablauflogik, NVS
 src/ui_splash.cpp    RONDO-Startbild
 src/ui*.cpp          Rahmen, sieben Screens, Alarmzustand im Aktiv-Screen
