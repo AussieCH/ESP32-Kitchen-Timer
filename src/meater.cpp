@@ -1,4 +1,4 @@
-// MEATER-Fleischfuehler ueber Bluetooth Low Energy.
+// MEATER-Grill-Thermometer ueber Bluetooth Low Energy.
 //
 // Kennungen und Umrechnung stammen aus der offengelegten Arbeit der Community
 // (nathanfaber/meaterble und die ESPHome-Umsetzung von MortenVinding), am

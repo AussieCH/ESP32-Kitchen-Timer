@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-// Anbindung an einen MEATER-Fleischfuehler (Bluetooth Low Energy).
+// Anbindung an ein MEATER-Grill-Thermometer (Bluetooth Low Energy).
 //
 // Der Fuehler laesst nur EINE Verbindung zu: solange RONDO verbunden ist,
 // sieht die MEATER-App nichts - und umgekehrt.

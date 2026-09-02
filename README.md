@@ -28,7 +28,7 @@ Eine Regel, überall gleich:
 * **Drehring** = immer der Kontext im aktuellen Screen, nie Navigation
 * **vertikal wischen** = innerhalb einer Liste blättern
 
-Der Knopf hat **keinen Taster** — jedes Bestätigen läuft über Touch. Sieben
+Der Knopf hat **keinen Taster** — jedes Bestätigen läuft über Touch. Acht
 Screens, unten zeigen Punkte die Position; nach dem Start steht man auf *Aktiv*:
 
 | Screen | Inhalt | Drehring |
@@ -37,6 +37,7 @@ Screens, unten zeigen Punkte die Position; nach dem Start steht man auf *Aktiv*:
 | **Aktiv** | Restzeit groß, außen ein Fortschrittsring in der Timer-Farbe, Buttons *Pause/Weiter* und *+1 Min*, oben ✕ (mit Rückfrage). Eine laufende **Stoppuhr** ist hier ein Eintrag wie ein Timer | wechselt zwischen laufenden Timern und der Stoppuhr |
 | **Neuer Timer** | `hh:mm:ss` (Segment antippen), Schnellwahl 3/5/10/15 Min, Melodie- und Icon-Button, *Start* + ✕ | stellt Segment, Melodie oder Icon |
 | **Eieruhr** | Größe, Kühlschrank/Zimmer, weich/wachsweich/hart → rechnet die Kochzeit und startet den Timer | stellt die gewählte Zeile |
+| **Grill-Thermometer** | Kerntemperatur des MEATER-Fühlers gross, dazu Garraum, Fühler-Akku und Verbindungszustand | — |
 | **Stoppuhr** | zählt hoch, mit Zehnteln; läuft im Hintergrund weiter und erscheint dann auch im Aktiv-Screen und in der Übersicht | — |
 | **Vorlagen** | Liste; **tippen = starten**, **lang tippen** = Starten/Editieren/Löschen | scrollt die Liste |
 | **Einstellungen** | Helligkeit, Lautstärke, *Alarm testen*, Akkuzustand | stellt die gewählte Zeile |
@@ -95,7 +96,10 @@ füllen könnte, aber „läuft" liest man von weitem.
 * Ändert sich das Datenformat der Vorlagen oder die Icon-Reihenfolge, muss
   `PRESET_VERSION` in `src/timers.cpp` hoch — sonst zeigen alte Vorlagen auf
   falsche Icons.
-* **LVGL-Heap: 128 KB.** Mit 64 KB schlug `lv_mem_alloc` beim Aufbau der
+* **Der MEATER-Fühler lässt nur EINE Verbindung zu.** Solange RONDO verbunden
+  ist, sieht die MEATER-App nichts — und umgekehrt. Verbunden wird mit der
+  Ladeschale (dem Verstärker), nicht mit dem Fühler direkt.
+* **LVGL-Heap: 96 KB.** Mit 64 KB schlug `lv_mem_alloc` beim Aufbau der
   Alarmmasken fehl, und LVGLs Assert-Handler ist ein `while(1)` — das Gerät wäre
   im Alarm stillschweigend stehengeblieben. Der Simulator schreibt zu jedem
   Screen den freien Heap mit, damit so etwas auffällt.
@@ -188,6 +192,7 @@ src/audio.*          I2S-Tonsynthese, Lautstaerke, Fade-in
 src/melodies.*       20 Alarmmelodien als Notentabellen
 src/leds.*           WS2812-Ring: Restzeit in der Timer-Farbe, Alarmblinken, Logo
 src/battery.*        Spannungsmessung mit Ueberabtastung und Kennlinie
+src/meater.*         BLE-Client fuer das MEATER-Grill-Thermometer
 src/timers.*         Datenmodell, Ablauflogik, NVS
 src/ui_splash.cpp    RONDO-Startbild
 src/ui*.cpp          Rahmen, sieben Screens, Alarmzustand im Aktiv-Screen

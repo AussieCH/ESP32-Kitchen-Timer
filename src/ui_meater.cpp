@@ -1,4 +1,4 @@
-// Screen: Fleischfuehler (MEATER).
+// Screen: Grill-Thermometer (MEATER).
 //
 // Zeigt an, was der Fuehler sendet: Kerntemperatur gross, darunter Garraum,
 // Akku und Verbindungszustand. Der Fuehler meldet sich nur, wenn er aus der
@@ -11,7 +11,7 @@ static lv_obj_t *s_temp, *s_unit, *s_amb, *s_batt, *s_state, *s_dot;
 
 void ui_meater_create(lv_obj_t *p) {
   lv_obj_t *title = lv_label_create(p);
-  lv_label_set_text(title, "Fleischfuehler");
+  lv_label_set_text(title, "Grill-Thermometer");
   lv_obj_set_style_text_font(title, &lv_font_montserrat_14, 0);
   lv_obj_set_style_text_color(title, col_dim(), 0);
   lv_obj_align(title, LV_ALIGN_CENTER, 0, -150);

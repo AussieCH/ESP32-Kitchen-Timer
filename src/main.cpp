@@ -115,7 +115,7 @@ void setup() {
   audio_init();
   leds_init();
   battery_init();
-  meater_init();          // Bluetooth-Suche nach dem Fleischfuehler
+  meater_init();          // Bluetooth-Suche nach dem Grill-Thermometer
   timers_init();    // liest Vorlagen + Lautstaerke/Helligkeit aus dem NVS
 
   static lv_indev_drv_t indev_drv;
