@@ -22,7 +22,11 @@
 
 static lv_obj_t *s_arc, *s_idx, *s_icon, *s_time, *s_sub;
 static lv_obj_t *s_btn_pause, *s_btn_plus, *s_btn_del;
-static lv_obj_t *s_empty, *s_stop_area;
+static lv_obj_t *s_empty, *s_stop_area, *s_idle_mark;
+static lv_timer_t *s_idle_timer = nullptr;
+static int s_idle_pos = 0;
+
+#define IDLE_STEP_MS 620          // langsam: eine Runde dauert gut acht Sekunden
 
 static uint32_t s_sel_id = 0;
 static uint32_t s_pending_id = 0;
@@ -135,6 +139,11 @@ static void stoparea_cb(lv_event_t *) {
 
 static void newtimer_cb(lv_event_t *) { ui_goto(TILE_NEW); }
 
+static void idle_cb(lv_timer_t *) {
+  s_idle_pos = (s_idle_pos + 1) % 13;
+  rondo_mark_highlight(s_idle_mark, s_idle_pos);
+}
+
 // ---------------------------------------------------------------- Aufbau
 void ui_active_create(lv_obj_t *p) {
   s_arc = lv_arc_create(p);
@@ -175,22 +184,25 @@ void ui_active_create(lv_obj_t *p) {
   s_btn_del = make_button(p, LV_SYMBOL_CLOSE, 44, 44, del_cb, nullptr);
   lv_obj_align(s_btn_del, LV_ALIGN_CENTER, 0, -152);
 
-  // Leerzustand: nicht einfach leer, sondern der Weg zum naechsten Timer
+  // Laeuft nichts, zeigt das Geraet sein Zeichen statt einer Fehlanzeige: der
+  // orange Punkt wandert langsam herum, damit man sieht, dass es wach ist.
+  // Antippen fuehrt zum neuen Timer - der Weg ueber das Wischen bleibt daneben.
   s_empty = lv_obj_create(p);
   lv_obj_set_size(s_empty, SCR_W, SCR_H);
   lv_obj_center(s_empty);
   lv_obj_set_style_bg_color(s_empty, lv_color_black(), 0);
   lv_obj_set_style_border_width(s_empty, 0, 0);
   lv_obj_set_style_radius(s_empty, LV_RADIUS_CIRCLE, 0);
+  lv_obj_set_style_pad_all(s_empty, 0, 0);
   lv_obj_clear_flag(s_empty, LV_OBJ_FLAG_SCROLLABLE);
-  lv_obj_t *el = lv_label_create(s_empty);
-  lv_label_set_text(el, "Kein Timer laeuft");
-  lv_obj_set_style_text_font(el, &lv_font_montserrat_20, 0);
-  lv_obj_set_style_text_color(el, col_dim(), 0);
-  lv_obj_align(el, LV_ALIGN_CENTER, 0, -40);
-  lv_obj_t *eb = make_button(s_empty, "Neuer Timer", 180, 58, newtimer_cb, nullptr);
-  lv_obj_align(eb, LV_ALIGN_CENTER, 0, 30);
-  button_set_color(eb, lv_palette_main(LV_PALETTE_AMBER));
+  lv_obj_add_flag(s_empty, LV_OBJ_FLAG_CLICKABLE);
+  lv_obj_add_event_cb(s_empty, newtimer_cb, LV_EVENT_CLICKED, nullptr);
+
+  s_idle_mark = rondo_mark_create(s_empty, 118, 28, true);
+  lv_obj_center(s_idle_mark);
+  rondo_mark_highlight(s_idle_mark, 0);
+  s_idle_timer = lv_timer_create(idle_cb, IDLE_STEP_MS, nullptr);
+  lv_timer_pause(s_idle_timer);
 
   // Im Alarm ist die halbe Bildmitte die Stopptaste - man tippt mit dem
   // Handruecken, nicht mit der Fingerspitze.
@@ -247,12 +259,16 @@ void ui_active_update() {
     if (lv_obj_has_flag(s_empty, LV_OBJ_FLAG_HIDDEN)) {
       lv_obj_clear_flag(s_empty, LV_OBJ_FLAG_HIDDEN);
       lv_obj_move_foreground(s_empty);
+      lv_timer_resume(s_idle_timer);
     }
     lv_obj_add_flag(s_stop_area, LV_OBJ_FLAG_HIDDEN);
     s_paint_sig = 0xFFFFFFFF;
     return;
   }
-  lv_obj_add_flag(s_empty, LV_OBJ_FLAG_HIDDEN);
+  if (!lv_obj_has_flag(s_empty, LV_OBJ_FLAG_HIDDEN)) {
+    lv_obj_add_flag(s_empty, LV_OBJ_FLAG_HIDDEN);
+    lv_timer_pause(s_idle_timer);          // nicht im Verborgenen weiterlaufen
+  }
 
   if (sel_is_stopwatch()) { show_stopwatch(pos, n); return; }
 

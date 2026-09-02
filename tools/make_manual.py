@@ -280,7 +280,9 @@ def content(st):
          "Laufen mehrere Zeiten, steht unter den Knöpfen zum Beispiel <b>1 / 3</b>. Mit dem <b>Ring</b> "
          "oder mit Wischen nach oben und unten blättern Sie durch.",
          "<b>Jede Zeit hat ihre eigene Farbe.</b> Der Leuchtring am Gerät nimmt immer die Farbe der Zeit an, "
-         "die Sie gerade ansehen."],
+         "die Sie gerade ansehen.",
+         "Läuft gerade nichts, zeigt RONDO sein Zeichen: der orange Punkt wandert langsam im Kreis. "
+         "Ein Tipp darauf führt direkt zum neuen Timer."],
         "Drei Timer, hier der zweite"))
     st.append(screen_block(
         shot("2b-uebersicht.png"), "Übersicht",

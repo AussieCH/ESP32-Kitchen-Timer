@@ -46,6 +46,9 @@ void      ui_confirm(const char *question, ui_yes_cb_t yes_cb, void *user);
 // --- Screens ---------------------------------------------------------------
 void ui_splash_show();                // RONDO-Logo beim Start
 bool ui_splash_active();
+// Das Logo als Baustein - Startbild und Ruhebild teilen es sich
+lv_obj_t *rondo_mark_create(lv_obj_t *parent, int ring_r, int dot_d, bool with_word);
+void      rondo_mark_highlight(lv_obj_t *mark, int idx);
 
 void ui_overview_create(lv_obj_t *p); void ui_overview_update();
 void ui_overview_knob(int d, int step);

@@ -21,9 +21,48 @@
 #define COL_ORANGE 0xEE7C25
 
 static lv_obj_t *s_root = nullptr;
-static lv_obj_t *s_dot[DOTS];
+static lv_obj_t *s_mark = nullptr;
 static lv_timer_t *s_timer = nullptr;
 static int s_step = 0;
+
+// ---------------------------------------------------------------- Logo
+// Als eigener Baustein, weil es zweimal gebraucht wird: beim Start und als
+// Ruhebild, wenn kein Timer laeuft.
+lv_obj_t *rondo_mark_create(lv_obj_t *parent, int ring_r, int dot_d, bool with_word) {
+  lv_obj_t *box = lv_obj_create(parent);
+  lv_obj_set_size(box, 2 * ring_r + dot_d + 4, 2 * ring_r + dot_d + 4);
+  lv_obj_set_style_bg_opa(box, LV_OPA_0, 0);
+  lv_obj_set_style_border_width(box, 0, 0);
+  lv_obj_set_style_pad_all(box, 0, 0);
+  lv_obj_clear_flag(box, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);
+
+  for (int i = 0; i < DOTS; i++) {
+    float a = -(float)M_PI / 2.0f + i * 2.0f * (float)M_PI / DOTS;   // oben beginnen
+    lv_obj_t *d = lv_obj_create(box);
+    lv_obj_set_size(d, dot_d, dot_d);
+    lv_obj_set_style_radius(d, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_border_width(d, 0, 0);
+    lv_obj_set_style_bg_color(d, lv_color_hex(COL_CREAM), 0);
+    lv_obj_clear_flag(d, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_align(d, LV_ALIGN_CENTER,
+                 (lv_coord_t)lroundf(ring_r * cosf(a)), (lv_coord_t)lroundf(ring_r * sinf(a)));
+  }
+  if (with_word) {
+    lv_obj_t *name = lv_label_create(box);
+    lv_label_set_text(name, "RONDO");
+    lv_obj_set_style_text_font(name, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_color(name, lv_color_hex(COL_CREAM), 0);
+    lv_obj_set_style_text_letter_space(name, 6, 0);
+    lv_obj_center(name);
+  }
+  return box;
+}
+
+void rondo_mark_highlight(lv_obj_t *mark, int idx) {
+  for (int i = 0; i < DOTS; i++)
+    lv_obj_set_style_bg_color(lv_obj_get_child(mark, i),
+                              lv_color_hex(i == idx ? COL_ORANGE : COL_CREAM), 0);
+}
 
 static void finish() {
   if (s_timer) { lv_timer_del(s_timer); s_timer = nullptr; }
@@ -33,13 +72,10 @@ static void finish() {
 
 static void step_cb(lv_timer_t *) {
   if (s_step < DOTS) {
-    int prev = (s_step + DOTS - 1) % DOTS;
-    lv_obj_set_style_bg_color(s_dot[prev], lv_color_hex(COL_CREAM), 0);
-    lv_obj_set_style_bg_color(s_dot[s_step], lv_color_hex(COL_ORANGE), 0);
+    rondo_mark_highlight(s_mark, s_step);
     leds_single(s_step, COL_ORANGE);
   } else if (s_step == DOTS) {
-    lv_obj_set_style_bg_color(s_dot[DOTS - 1], lv_color_hex(COL_CREAM), 0);
-    lv_obj_set_style_bg_color(s_dot[0], lv_color_hex(COL_ORANGE), 0);  // zurueck nach oben
+    rondo_mark_highlight(s_mark, 0);                                   // zurueck nach oben
     leds_single(0, COL_ORANGE);
   } else if (s_step == DOTS + HOLD_STEPS) {
     lv_obj_fade_out(s_root, 400, 0);
@@ -65,24 +101,9 @@ void ui_splash_show() {
   lv_obj_add_flag(s_root, LV_OBJ_FLAG_CLICKABLE);
   lv_obj_add_event_cb(s_root, skip_cb, LV_EVENT_CLICKED, nullptr);
 
-  for (int i = 0; i < DOTS; i++) {
-    float a = -(float)M_PI / 2.0f + i * 2.0f * (float)M_PI / DOTS;   // oben beginnen
-    s_dot[i] = lv_obj_create(s_root);
-    lv_obj_set_size(s_dot[i], DOT_D, DOT_D);
-    lv_obj_set_style_radius(s_dot[i], LV_RADIUS_CIRCLE, 0);
-    lv_obj_set_style_border_width(s_dot[i], 0, 0);
-    lv_obj_set_style_bg_color(s_dot[i], lv_color_hex(i == 0 ? COL_ORANGE : COL_CREAM), 0);
-    lv_obj_clear_flag(s_dot[i], LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_align(s_dot[i], LV_ALIGN_CENTER,
-                 (lv_coord_t)lroundf(RING_R * cosf(a)), (lv_coord_t)lroundf(RING_R * sinf(a)));
-  }
-
-  lv_obj_t *name = lv_label_create(s_root);
-  lv_label_set_text(name, "RONDO");
-  lv_obj_set_style_text_font(name, &lv_font_montserrat_28, 0);
-  lv_obj_set_style_text_color(name, lv_color_hex(COL_CREAM), 0);
-  lv_obj_set_style_text_letter_space(name, 6, 0);
-  lv_obj_center(name);
+  s_mark = rondo_mark_create(s_root, RING_R, DOT_D, true);
+  lv_obj_center(s_mark);
+  rondo_mark_highlight(s_mark, 0);
 
   leds_single(0, COL_ORANGE);
   s_step = 1;

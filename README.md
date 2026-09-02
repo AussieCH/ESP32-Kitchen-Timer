@@ -59,7 +59,7 @@ Screens, unten zeigen Punkte die Position; nach dem Start steht man auf *Aktiv*:
 | Screen | Inhalt | Drehring |
 |---|---|---|
 | **Übersicht** | kompakte Liste aller laufenden Timer (und der Stoppuhr) mit Zeit und Zustand; **antippen holt einen in den Aktiv-Screen** | scrollt die Liste |
-| **Aktiv** | Restzeit groß, außen ein Fortschrittsring in der Timer-Farbe, Buttons *Pause/Weiter* und *+1 Min*, oben ✕ (mit Rückfrage). Eine laufende **Stoppuhr** ist hier ein Eintrag wie ein Timer | wechselt zwischen laufenden Timern und der Stoppuhr |
+| **Aktiv** | Restzeit groß, außen ein Fortschrittsring in der Timer-Farbe, Buttons *Pause/Weiter* und *+1 Min*, oben ✕ (mit Rückfrage). Eine laufende **Stoppuhr** ist hier ein Eintrag wie ein Timer. Läuft nichts: das RONDO-Zeichen mit langsam wanderndem Punkt, Tippen führt zum neuen Timer | wechselt zwischen laufenden Timern und der Stoppuhr |
 | **Neuer Timer** | `hh:mm:ss` (Segment antippen), Schnellwahl 3/5/10/15 Min, Melodie- und Icon-Button, *Start* + ✕ | stellt Segment, Melodie oder Icon |
 | **Eieruhr** | Größe, Kühlschrank/Zimmer, weich/wachsweich/hart → rechnet die Kochzeit und startet den Timer | stellt die gewählte Zeile |
 | **Grill-Thermometer** | Kerntemperatur des MEATER-Fühlers gross, dazu Garraum, Fühler-Akku und Verbindungszustand; **Zieltemperatur mit Alarm** | stellt die Zieltemperatur |
