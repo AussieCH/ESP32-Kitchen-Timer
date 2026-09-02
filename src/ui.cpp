@@ -149,11 +149,13 @@ static void tile_changed_cb(lv_event_t *) {
   for (int i = 0; i < TILE_COUNT; i++) if (s_tiles[i] == act) s_tile = i;
   dots_update();
   switch (s_tile) {
-    case TILE_OVERVIEW: ui_overview_update(); break;
-    case TILE_ACTIVE:   ui_active_update();   break;
-    case TILE_NEW:      ui_new_update();      break;
-    case TILE_PRESETS:  ui_presets_update();  break;
-    case TILE_SETTINGS: ui_settings_update(); break;
+    case TILE_OVERVIEW:  ui_overview_update();  break;
+    case TILE_ACTIVE:    ui_active_update();    break;
+    case TILE_NEW:       ui_new_update();       break;
+    case TILE_EGG:       ui_egg_update();       break;
+    case TILE_STOPWATCH: ui_stopwatch_update(); break;
+    case TILE_PRESETS:   ui_presets_update();   break;
+    case TILE_SETTINGS:  ui_settings_update();  break;
   }
 }
 
@@ -183,18 +185,20 @@ void ui_init() {
   ui_overview_create(s_tiles[TILE_OVERVIEW]);
   ui_active_create(s_tiles[TILE_ACTIVE]);
   ui_new_create(s_tiles[TILE_NEW]);
+  ui_egg_create(s_tiles[TILE_EGG]);
+  ui_stopwatch_create(s_tiles[TILE_STOPWATCH]);
   ui_presets_create(s_tiles[TILE_PRESETS]);
   ui_settings_create(s_tiles[TILE_SETTINGS]);
 
   lv_obj_t *dotbox = lv_obj_create(lv_layer_top());
-  lv_obj_set_size(dotbox, 100, 16);
+  lv_obj_set_size(dotbox, 120, 16);
   lv_obj_align(dotbox, LV_ALIGN_BOTTOM_MID, 0, -8);
   lv_obj_set_style_bg_opa(dotbox, LV_OPA_0, 0);
   lv_obj_set_style_border_width(dotbox, 0, 0);
   lv_obj_set_style_pad_all(dotbox, 0, 0);
   lv_obj_set_flex_flow(dotbox, LV_FLEX_FLOW_ROW);
   lv_obj_set_flex_align(dotbox, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-  lv_obj_set_style_pad_column(dotbox, 7, 0);
+  lv_obj_set_style_pad_column(dotbox, 6, 0);
   lv_obj_clear_flag(dotbox, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
   for (int i = 0; i < TILE_COUNT; i++) {
     s_dots[i] = lv_obj_create(dotbox);
@@ -226,18 +230,26 @@ void ui_debug_set(const char *txt) {
 int ui_current_tile() { return s_tile; }
 
 void ui_goto(int tile) {
+  // Nur zum Nachbarn wird geschoben. Ueber mehrere Kacheln hinweg ist die
+  // Animation nicht nur verwirrend (man sieht Screens vorbeifliegen, die man
+  // nicht wollte) - LVGL zeichnet dabei auch den Fortschrittsring des
+  // Aktiv-Screens weit ausserhalb des Sichtfelds, und lv_draw_mask_radius_init
+  // haengt sich daran auf.
+  bool neighbour = (tile == s_tile + 1) || (tile == s_tile - 1);
   s_tile = tile;
-  lv_obj_set_tile_id(s_tv, tile, 0, LV_ANIM_ON);
+  lv_obj_set_tile_id(s_tv, tile, 0, neighbour ? LV_ANIM_ON : LV_ANIM_OFF);
   dots_update();
 }
 
 void ui_tick() {
   switch (s_tile) {
-    case TILE_OVERVIEW: ui_overview_update(); break;
-    case TILE_ACTIVE:   ui_active_update();   break;
-    case TILE_NEW:      ui_new_update();      break;
-    case TILE_PRESETS:  ui_presets_update();  break;
-    case TILE_SETTINGS: ui_settings_update(); break;
+    case TILE_OVERVIEW:  ui_overview_update();  break;
+    case TILE_ACTIVE:    ui_active_update();    break;
+    case TILE_NEW:       ui_new_update();       break;
+    case TILE_EGG:       ui_egg_update();       break;
+    case TILE_STOPWATCH: ui_stopwatch_update(); break;
+    case TILE_PRESETS:   ui_presets_update();   break;
+    case TILE_SETTINGS:  ui_settings_update();  break;
   }
 }
 
@@ -245,10 +257,11 @@ void ui_on_knob(int delta, int step) {
   if (s_confirm) return;
   haptic_click();
   switch (s_tile) {
-    case TILE_OVERVIEW: ui_overview_knob(delta, step);  break;
-    case TILE_ACTIVE:   ui_active_knob(delta, step);   break;
-    case TILE_NEW:      ui_new_knob(delta, step);      break;
-    case TILE_PRESETS:  ui_presets_knob(delta, step);  break;
-    case TILE_SETTINGS: ui_settings_knob(delta, step); break;
+    case TILE_OVERVIEW:  ui_overview_knob(delta, step); break;
+    case TILE_ACTIVE:    ui_active_knob(delta, step);   break;
+    case TILE_NEW:       ui_new_knob(delta, step);      break;
+    case TILE_EGG:       ui_egg_knob(delta, step);      break;
+    case TILE_PRESETS:   ui_presets_knob(delta, step);  break;
+    case TILE_SETTINGS:  ui_settings_knob(delta, step); break;
   }
 }

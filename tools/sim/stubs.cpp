@@ -3,6 +3,7 @@
 #include "haptics.h"
 #include "audio.h"
 #include "leds.h"
+#include "battery.h"
 
 void haptic_init() {}
 void haptic_click() {}
@@ -25,5 +26,14 @@ void leds_progress(uint32_t, float) {}
 void leds_alarm_phase(uint32_t, bool) {}
 void leds_off() {}
 bool leds_present() { return false; }
+
+void leds_countdown(float, uint32_t) {}
+
+void  battery_init() {}
+void  battery_tick() {}
+float battery_volts() { return 3.92f; }
+int   battery_percent() { return 71; }
+bool  battery_is_cell() { return true; }
+bool  battery_low() { return false; }
 
 void app_apply_brightness(int) {}

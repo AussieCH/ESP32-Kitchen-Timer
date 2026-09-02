@@ -251,7 +251,16 @@ void ui_active_update() {
 
   lv_obj_set_style_arc_color(s_arc, c, LV_PART_INDICATOR);
   uint32_t total_ms = t->total_s * 1000UL;
-  lv_arc_set_value(s_arc, total_ms ? (int)((int64_t)rest_ms * 1000 / total_ms) : 0);
+  int arc_val = total_ms ? (int)((int64_t)rest_ms * 1000 / total_ms) : 0;
+  // Im Alarm hat der Ring nichts mehr anzuzeigen - und ein Bogen der Laenge
+  // null bringt LVGL zum Haengen (lv_draw_mask_radius_init, im Simulator
+  // reproduzierbar). Also ausblenden statt auf null zeichnen.
+  if (arc_val > 0) {
+    lv_obj_clear_flag(s_arc, LV_OBJ_FLAG_HIDDEN);
+    lv_arc_set_value(s_arc, arc_val);
+  } else {
+    lv_obj_add_flag(s_arc, LV_OBJ_FLAG_HIDDEN);
+  }
 
   icon_set(s_icon, t->icon, c);
 

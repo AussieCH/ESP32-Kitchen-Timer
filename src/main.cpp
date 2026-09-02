@@ -9,6 +9,7 @@
 #include "haptics.h"
 #include "audio.h"
 #include "leds.h"
+#include "battery.h"
 #include "timers.h"
 #include "ui.h"
 
@@ -112,6 +113,7 @@ void setup() {
   knob_init();
   audio_init();
   leds_init();
+  battery_init();
   timers_init();    // liest Vorlagen + Lautstaerke/Helligkeit aus dem NVS
 
   static lv_indev_drv_t indev_drv;
@@ -139,6 +141,9 @@ void loop() {
 
   static uint32_t t_timers = 0, t_ui = 0;
   uint32_t now = millis();
+
+  static uint32_t t_batt = 0;
+  if (now - t_batt >= 1000) { t_batt = now; battery_tick(); }
 
   if (now - t_timers >= 100) {
     t_timers = now;
@@ -185,8 +190,9 @@ void loop() {
       ActiveTimer *t = active_at(0);
       if (t && !t->expired) {
         uint32_t total = t->total_s * 1000UL;
-        float frac = total ? (float)timer_remaining_ms(t) / total : 0.0f;
-        leds_progress(lv_color_to32(timer_color(t->color)) & 0xFFFFFF, frac);
+        uint32_t rest_ms = timer_remaining_ms(t);
+        float frac = total ? (float)rest_ms / total : 0.0f;
+        leds_countdown(frac, (rest_ms + 999) / 1000);
       } else {
         leds_off();
       }

@@ -9,7 +9,10 @@
 #define LV_COLOR_16_SWAP        0      /* Byte-Swap macht LovyanGFX beim Push */
 
 #define LV_MEM_CUSTOM           0
-#define LV_MEM_SIZE             (64U * 1024U)
+// 64 KB reichten bis fuenf Screens. Mit sieben Kacheln und den Masken des
+// Alarm-Overlays schlaegt lv_mem_alloc fehl - und LVGLs Assert-Handler ist ein
+// while(1), das Geraet steht dann einfach. Im Simulator reproduzierbar.
+#define LV_MEM_SIZE             (128U * 1024U)
 
 #define LV_DISP_DEF_REFR_PERIOD 20
 #define LV_INDEV_DEF_READ_PERIOD 15

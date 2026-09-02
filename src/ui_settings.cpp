@@ -8,6 +8,7 @@
 #include "audio.h"
 #include "leds.h"
 #include "melodies.h"
+#include "battery.h"
 
 #if HAS_AUDIO
   #define ROW_COUNT 2
@@ -17,6 +18,7 @@
 #endif
 
 static lv_obj_t *s_box[ROW_COUNT], *s_bar[ROW_COUNT], *s_val[ROW_COUNT];
+static lv_obj_t *s_batt;
 static int s_focus = 0;
 static lv_timer_t *s_save_timer = nullptr;
 
@@ -107,8 +109,13 @@ void ui_settings_create(lv_obj_t *p) {
   lv_label_set_text(hint, "Drehring stellt die Helligkeit");
   lv_obj_set_style_text_font(hint, &lv_font_montserrat_14, 0);
   lv_obj_set_style_text_color(hint, col_dim(), 0);
-  lv_obj_align(hint, LV_ALIGN_CENTER, 0, 132);
+  lv_obj_align(hint, LV_ALIGN_CENTER, 0, 118);
 #endif
+
+  s_batt = lv_label_create(p);
+  lv_obj_set_style_text_font(s_batt, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_color(s_batt, col_dim(), 0);
+  lv_obj_align(s_batt, LV_ALIGN_CENTER, 0, 148);
 }
 
 void ui_settings_update() {
@@ -117,6 +124,22 @@ void ui_settings_update() {
 #if HAS_AUDIO
   v[ROW_VOL] = audio_get_volume();
 #endif
+  // Akkuzeile: auf dem Waveshare misst der Teiler das 5V-Rail, nicht die Zelle -
+  // eine Prozentzahl waere dort erfunden, deshalb nur die Spannung.
+  int pct = battery_percent();
+  static int last_pct = -999;
+  if (pct != last_pct) {
+    last_pct = pct;
+    if (battery_is_cell()) {
+      lv_label_set_text_fmt(s_batt, LV_SYMBOL_BATTERY_FULL "  %d %%   %.2f V", pct, battery_volts());
+      lv_obj_set_style_text_color(s_batt, battery_low() ? lv_palette_main(LV_PALETTE_RED)
+                                                        : col_dim(), 0);
+    } else {
+      lv_label_set_text_fmt(s_batt, LV_SYMBOL_USB "  %.2f V", battery_volts());
+      lv_obj_set_style_text_color(s_batt, col_dim(), 0);
+    }
+  }
+
   static int last[ROW_COUNT] = { -1 };
   static int last_focus = -1;
   bool same = (s_focus == last_focus);

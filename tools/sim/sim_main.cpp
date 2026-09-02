@@ -72,7 +72,10 @@ static void check(lv_obj_t *o, const char *scenario, lv_area_t clip) {
 static void scene(const char *name) {
   settle(400);
   shot(name);
-  printf("[%s]\n", name);
+  lv_mem_monitor_t mem;
+  lv_mem_monitor(&mem);
+  printf("[%s]  LVGL-Heap: %u B frei, %u %% belegt, %u %% fragmentiert\n",
+         name, (unsigned)mem.free_size, (unsigned)mem.used_pct, (unsigned)mem.frag_pct);
   lv_area_t full = { 0, 0, SCR_W - 1, SCR_H - 1 };
   check(lv_scr_act(), name, full);
   check(lv_layer_top(), name, full);
@@ -118,6 +121,14 @@ int main() {
     printf("[knob-kette] nach 7 Rastungen im Neu-Screen (Fokus %d) - Screenshot pruefen\n",
            ui_new_focus());
   }
+
+  ui_goto(TILE_EGG);
+  ui_egg_update();
+  scene("3c-eieruhr");
+
+  ui_goto(TILE_STOPWATCH);
+  ui_stopwatch_update();
+  scene("3d-stoppuhr");
 
   ui_goto(TILE_PRESETS);
   ui_presets_update();

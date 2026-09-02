@@ -8,12 +8,14 @@
 
 // Reihenfolge von links nach rechts. Die Uebersicht liegt links vom Aktiv-
 // Screen: nach rechts wischen (Inhalt wandert nach rechts) fuehrt dorthin.
-#define TILE_OVERVIEW 0
-#define TILE_ACTIVE   1
-#define TILE_NEW      2
-#define TILE_PRESETS  3
-#define TILE_SETTINGS 4
-#define TILE_COUNT    5
+#define TILE_OVERVIEW  0
+#define TILE_ACTIVE    1
+#define TILE_NEW       2
+#define TILE_EGG       3
+#define TILE_STOPWATCH 4
+#define TILE_PRESETS   5
+#define TILE_SETTINGS  6
+#define TILE_COUNT     7
 
 LV_FONT_DECLARE(font_time_92);
 LV_FONT_DECLARE(font_time_52);
@@ -51,6 +53,12 @@ void ui_active_knob(int d, int step); void ui_active_gesture(lv_dir_t dir);
 void ui_new_create(lv_obj_t *p);      void ui_new_update();
 void ui_new_knob(int d, int step);
 void ui_new_load(uint32_t total_s, uint8_t icon, uint8_t melody, int edit_preset_idx);
+
+void ui_egg_create(lv_obj_t *p);      void ui_egg_update();
+void ui_egg_knob(int d, int step);
+
+void ui_stopwatch_create(lv_obj_t *p); void ui_stopwatch_update();
+bool ui_stopwatch_running();
 
 void ui_presets_create(lv_obj_t *p);  void ui_presets_update();
 void ui_presets_knob(int d, int step);
