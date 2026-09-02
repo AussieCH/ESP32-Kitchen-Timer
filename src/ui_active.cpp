@@ -16,15 +16,13 @@
 #include "audio.h"
 #include "leds.h"
 #include "melodies.h"
+#include "alarm.h"
 
 #define SEL_STOPWATCH 0u          // Kennung der Stoppuhr in der Auswahl
-#define FLASH_MS 130
 
 static lv_obj_t *s_arc, *s_idx, *s_icon, *s_time, *s_sub;
 static lv_obj_t *s_btn_pause, *s_btn_plus, *s_btn_del;
-static lv_obj_t *s_empty, *s_flash, *s_stop_area;
-static lv_timer_t *s_flash_timer = nullptr;
-static bool s_flash_on = false;
+static lv_obj_t *s_empty, *s_stop_area;
 
 static uint32_t s_sel_id = 0;
 static uint32_t s_pending_id = 0;
@@ -59,43 +57,21 @@ static void select_pos(int pos) {
   s_paint_sig = 0xFFFFFFFF;
 }
 
-// ---------------------------------------------------------------- Blinken
-static void flash_stop() {
-  haptic_buzz(false);
-  audio_stop();
-  leds_off();
-  s_flash_on = false;
-  lv_obj_set_style_bg_opa(s_flash, LV_OPA_0, 0);
-  if (s_flash_timer) lv_timer_pause(s_flash_timer);
-}
-
-static void flash_cb(lv_timer_t *) {
-  int idx = timer_first_ringing();
-  if (idx < 0) { flash_stop(); return; }
-
-  lv_color_t c = timer_color(active_at(idx)->color);
-  s_flash_on = !s_flash_on;
-  lv_obj_set_style_bg_color(s_flash, c, 0);
-  lv_obj_set_style_bg_opa(s_flash, s_flash_on ? LV_OPA_40 : LV_OPA_0, 0);
-  haptic_buzz(s_flash_on);
-  leds_alarm_phase(lv_color_to32(c) & 0xFFFFFF, s_flash_on);
-}
+// ---------------------------------------------------------------- Alarm
+static void flash_stop() { alarm_stop(); }
 
 void ui_alarm_check() {
   int idx = timer_first_ringing();
-  if (idx < 0) { flash_stop(); return; }
-
+  if (idx < 0) {
+    if (alarm_kind() == ALARM_TIMER) alarm_stop();
+    return;
+  }
   ActiveTimer *t = active_at(idx);
   s_sel_id = t->id;                       // der Alarm bestimmt, was man sieht
   s_paint_sig = 0xFFFFFFFF;
-  if (!audio_is_playing()) {
-    audio_set_fade_in(true);
-    audio_play(&MELODIES[t->melody % MELODY_COUNT], true);
-  }
+  alarm_start(lv_color_to32(timer_color(t->color)) & 0xFFFFFF, t->melody, ALARM_TIMER);
   ui_goto(TILE_ACTIVE);
   ui_active_update();
-  if (!s_flash_timer) s_flash_timer = lv_timer_create(flash_cb, FLASH_MS, nullptr);
-  lv_timer_resume(s_flash_timer);
 }
 
 // ---------------------------------------------------------------- Aktionen
@@ -215,15 +191,6 @@ void ui_active_create(lv_obj_t *p) {
   lv_obj_t *eb = make_button(s_empty, "Neuer Timer", 180, 58, newtimer_cb, nullptr);
   lv_obj_align(eb, LV_ALIGN_CENTER, 0, 30);
   button_set_color(eb, lv_palette_main(LV_PALETTE_AMBER));
-
-  // Blinkflaeche liegt ueber allem, faengt aber keine Beruehrungen ab
-  s_flash = lv_obj_create(p);
-  lv_obj_set_size(s_flash, SCR_W, SCR_H);
-  lv_obj_center(s_flash);
-  lv_obj_set_style_radius(s_flash, LV_RADIUS_CIRCLE, 0);
-  lv_obj_set_style_border_width(s_flash, 0, 0);
-  lv_obj_set_style_bg_opa(s_flash, LV_OPA_0, 0);
-  lv_obj_clear_flag(s_flash, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
 
   // Im Alarm ist die halbe Bildmitte die Stopptaste - man tippt mit dem
   // Handruecken, nicht mit der Fingerspitze.

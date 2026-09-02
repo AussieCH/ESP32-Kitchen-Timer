@@ -7,6 +7,7 @@
 #include <Arduino.h>
 #include "ui.h"
 #include "haptics.h"
+#include "alarm.h"
 
 static lv_obj_t *s_tv;
 static lv_obj_t *s_tiles[TILE_COUNT];
@@ -192,6 +193,8 @@ void ui_init() {
   ui_presets_create(s_tiles[TILE_PRESETS]);
   ui_settings_create(s_tiles[TILE_SETTINGS]);
 
+  alarm_init();          // Blinkflaeche liegt ueber allen Screens
+
   lv_obj_t *dotbox = lv_obj_create(lv_layer_top());
   lv_obj_set_size(dotbox, 130, 16);
   lv_obj_align(dotbox, LV_ALIGN_BOTTOM_MID, 0, -8);
@@ -264,6 +267,7 @@ void ui_on_knob(int delta, int step) {
     case TILE_ACTIVE:    ui_active_knob(delta, step);   break;
     case TILE_NEW:       ui_new_knob(delta, step);      break;
     case TILE_EGG:       ui_egg_knob(delta, step);      break;
+    case TILE_MEATER:    ui_meater_knob(delta, step);   break;
     case TILE_PRESETS:   ui_presets_knob(delta, step);  break;
     case TILE_SETTINGS:  ui_settings_knob(delta, step); break;
   }

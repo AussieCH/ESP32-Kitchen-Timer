@@ -14,6 +14,8 @@ static Preset s_presets[MAX_PRESETS];
 static int s_preset_n = 0;
 
 static int s_brightness = 80;
+static int s_meater_target = 58;
+static bool s_meater_armed = false;
 static Preferences s_prefs;
 
 int64_t now_ms() { return esp_timer_get_time() / 1000; }
@@ -27,6 +29,8 @@ static void presets_save() {
 void settings_save() {
   s_prefs.putInt("bright", s_brightness);
   s_prefs.putInt("vol", audio_get_volume());
+  s_prefs.putInt("mtarget", s_meater_target);
+  s_prefs.putBool("marmed", s_meater_armed);
 }
 
 void timers_init() {
@@ -39,6 +43,8 @@ void timers_init() {
 
   s_brightness = constrain(s_prefs.getInt("bright", 80), 10, 100);
   audio_set_volume(s_prefs.getInt("vol", 70));
+  s_meater_target = constrain(s_prefs.getInt("mtarget", 58), 30, 99);
+  s_meater_armed = s_prefs.getBool("marmed", false);
 
   // Icon-IDs stecken in den Vorlagen: aendert sich der Icon-Satz, sind gespeicherte
   // Vorlagen wertlos - deshalb eine Version im NVS.
@@ -58,6 +64,10 @@ void timers_init() {
 
 int setting_brightness() { return s_brightness; }
 void setting_set_brightness(int v) { s_brightness = constrain(v, 10, 100); }
+int  setting_meater_target() { return s_meater_target; }
+void setting_set_meater_target(int c) { s_meater_target = constrain(c, 30, 99); }
+bool setting_meater_armed() { return s_meater_armed; }
+void setting_set_meater_armed(bool on) { s_meater_armed = on; }
 
 // ---------------------------------------------------------------- laufende Timer
 uint32_t timer_remaining_ms(const ActiveTimer *t) {

@@ -137,6 +137,10 @@ int main() {
   ui_meater_update();
   scene("3e-fuehler");
 
+  setting_set_meater_armed(true);        // scharf: Zieltemperatur im Bild
+  ui_meater_update();
+  scene("3f-fuehler-ziel");
+
   ui_goto(TILE_STOPWATCH);
   ui_stopwatch_update();
   scene("3d-stoppuhr");

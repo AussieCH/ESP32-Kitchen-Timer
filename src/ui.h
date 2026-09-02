@@ -60,6 +60,7 @@ void ui_new_knob(int d, int step);
 void ui_new_load(uint32_t total_s, uint8_t icon, uint8_t melody, int edit_preset_idx);
 
 void ui_meater_create(lv_obj_t *p);   void ui_meater_update();
+void ui_meater_knob(int d, int step);
 
 void ui_egg_create(lv_obj_t *p);      void ui_egg_update();
 void ui_egg_knob(int d, int step);

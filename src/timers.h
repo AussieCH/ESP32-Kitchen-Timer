@@ -53,4 +53,8 @@ void  preset_delete(int idx);
 // --- Einstellungen ----------------------------------------------------------
 int   setting_brightness();       // 10..100
 void  setting_set_brightness(int v);
-void  settings_save();            // Helligkeit + Lautstaerke (entprellt aufrufen)
+int   setting_meater_target();    // Zieltemperatur des Grill-Thermometers, °C
+void  setting_set_meater_target(int c);
+bool  setting_meater_armed();
+void  setting_set_meater_armed(bool on);
+void  settings_save();            // Helligkeit, Lautstaerke, Zieltemperatur

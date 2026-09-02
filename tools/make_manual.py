@@ -306,7 +306,16 @@ def content(st):
          "verbindet sich von selbst. Der Punkt unten wird grün, sobald Werte ankommen.",
          "<b>Wichtig:</b> Der Fühler spricht immer nur mit einem Gerät. Solange RONDO verbunden "
          "ist, findet ihn die MEATER-App auf dem Handy nicht — und umgekehrt."],
-        "Ein Braten bei 62,4 °C"))
+        "Ein Braten bei 62,4 °C",
+        extra=[
+            Paragraph("<b>Damit das Fleisch Sie ruft</b>", S_H2),
+            Paragraph("Drehen Sie am Ring, bis die gewünschte <b>Zieltemperatur</b> im Kasten steht — "
+                      "rechts daneben steht, was das bedeutet: <i>englisch</i>, <i>rosa</i>, "
+                      "<i>medium</i>, <i>durch</i>. Dann auf <b>Alarm ein</b> tippen.", S_BODY),
+            Paragraph("Ist die Temperatur erreicht, meldet sich RONDO genau wie bei einer "
+                      "abgelaufenen Zeit: der Bildschirm blinkt, das Gerät brummt, die Melodie "
+                      "spielt. <b>Stopp</b> beendet es.", S_BODY),
+        ]))
     st.append(screen_block(
         shot("3d-stoppuhr.png"), "Stoppuhr",
         ["Zählt vorwärts statt rückwärts — für „wie lange köchelt das jetzt schon?“.",
@@ -358,6 +367,10 @@ def content(st):
         ("Die MEATER-App findet meinen Fühler nicht mehr.",
          "Dann ist RONDO gerade damit verbunden. Der Fühler lässt immer nur ein Gerät zu. "
          "Trennen Sie RONDO kurz vom Strom, dann findet die App ihn wieder."),
+        ("Der Temperatur-Alarm hat nicht ausgelöst.",
+         "Er muss scharf sein — im Thermometer-Screen steht dann <b>Alarm aus</b> auf dem Knopf "
+         "(das ist der Knopf zum Ausschalten) und der Zielkasten ist orange umrandet. Er löst "
+         "einmal aus; verstellen Sie danach das Ziel, ist er wieder bereit."),
         ("Das Thermometer zeigt nur Striche.",
          "Der Fühler sendet nur, wenn er <b>aus der Ladeschale</b> genommen ist. Steckt er drin, "
          "bleibt es bei „suche“. Ausserdem sollte die Ladeschale in der Nähe stehen — sie ist "

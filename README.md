@@ -37,7 +37,7 @@ Screens, unten zeigen Punkte die Position; nach dem Start steht man auf *Aktiv*:
 | **Aktiv** | Restzeit groß, außen ein Fortschrittsring in der Timer-Farbe, Buttons *Pause/Weiter* und *+1 Min*, oben ✕ (mit Rückfrage). Eine laufende **Stoppuhr** ist hier ein Eintrag wie ein Timer | wechselt zwischen laufenden Timern und der Stoppuhr |
 | **Neuer Timer** | `hh:mm:ss` (Segment antippen), Schnellwahl 3/5/10/15 Min, Melodie- und Icon-Button, *Start* + ✕ | stellt Segment, Melodie oder Icon |
 | **Eieruhr** | Größe, Kühlschrank/Zimmer, weich/wachsweich/hart → rechnet die Kochzeit und startet den Timer | stellt die gewählte Zeile |
-| **Grill-Thermometer** | Kerntemperatur des MEATER-Fühlers gross, dazu Garraum, Fühler-Akku und Verbindungszustand | — |
+| **Grill-Thermometer** | Kerntemperatur des MEATER-Fühlers gross, dazu Garraum, Fühler-Akku und Verbindungszustand; **Zieltemperatur mit Alarm** | stellt die Zieltemperatur |
 | **Stoppuhr** | zählt hoch, mit Zehnteln; läuft im Hintergrund weiter und erscheint dann auch im Aktiv-Screen und in der Übersicht | — |
 | **Vorlagen** | Liste; **tippen = starten**, **lang tippen** = Starten/Editieren/Löschen | scrollt die Liste |
 | **Einstellungen** | Helligkeit, Lautstärke, *Alarm testen*, Akkuzustand | stellt die gewählte Zeile |
@@ -96,6 +96,13 @@ solange er **aus der Ladeschale genommen** ist.
 | Akku | `2adb4877-68d8-4884-bd3c-d83853bf27b8` |
 | Kerntemperatur | `(x[0] + (x[1]<<8) + 8) / 16` = °C |
 | Garraum | `(tip + max(0, ((ra - min(48, oa)) * 16 * 589) / 1487) + 8) / 16` |
+
+**Zieltemperatur.** Der Drehring stellt sie (30–99 °C), daneben steht die
+Garstufe in Worten — man denkt eher in „rosa" als in 58 °C. Ist der Alarm
+scharf und wird das Ziel erreicht, läuft **derselbe Alarm wie bei einem
+abgelaufenen Timer**. Deshalb liegt die Alarmwirkung in `src/alarm.*` und nicht
+mehr im Timer-Screen: Blinken, Haptik, Melodie und LED-Ring haben zwei Auslöser,
+und zwei Kopien davon wären eine zu viel. Ziel und Scharfschaltung liegen im NVS.
 
 Kennungen und Umrechnung stammen aus der offengelegten Arbeit der Community
 ([meaterble](https://github.com/nathanfaber/meaterble), [ESPHome-Gist](https://gist.github.com/MortenVinding/a513c0094d0df41a4425612257b3cabc))
@@ -225,6 +232,7 @@ src/melodies.*       20 Alarmmelodien als Notentabellen
 src/leds.*           WS2812-Ring: Restzeit in der Timer-Farbe, Alarmblinken, Logo
 src/battery.*        Spannungsmessung mit Ueberabtastung und Kennlinie
 src/meater.*         BLE-Client fuer das MEATER-Grill-Thermometer
+src/alarm.*          Alarmwirkung (Blinken, Haptik, Melodie, Ring) fuer beide Ausloeser
 src/timers.*         Datenmodell, Ablauflogik, NVS
 src/ui_splash.cpp    RONDO-Startbild
 src/ui*.cpp          Rahmen, sieben Screens, Alarmzustand im Aktiv-Screen
