@@ -1,8 +1,33 @@
-# RONDO — Küchentimer auf dem Guition JC3636K718C
+<p align="center">
+  <img src="docs/img/logo.png" width="180" alt="RONDO">
+</p>
 
-Autarker Küchentimer auf dem 1.8"-Runddisplay mit Drehring. Kein WLAN, kein
-Home Assistant, keine RTC — alles läuft lokal auf dem Gerät.
-Arduino-Core 3.x (pioarduino) + LVGL 8.4 + LovyanGFX (`Panel_ST77916`, QSPI).
+<h1 align="center">RONDO</h1>
+
+<p align="center">
+  Autarker Küchentimer auf einem 1.8"-Runddisplay mit Drehring.<br>
+  Kein WLAN, kein Konto, keine App — alles läuft lokal auf dem Gerät.
+</p>
+
+<p align="center">
+  <img src="docs/img/aktiv.png" width="150" alt="Laufender Timer">
+  <img src="docs/img/uebersicht.png" width="150" alt="Übersicht aller Timer">
+  <img src="docs/img/thermometer.png" width="150" alt="Grill-Thermometer">
+  <img src="docs/img/alarm.png" width="150" alt="Alarm">
+</p>
+
+<p align="center">
+  <img src="docs/img/neuer-timer.png" width="150" alt="Neuer Timer">
+  <img src="docs/img/eieruhr.png" width="150" alt="Eieruhr">
+  <img src="docs/img/thermometer-offline.png" width="150" alt="Thermometer ohne Fühler">
+</p>
+
+<p align="center"><sub>Alle Abbildungen kommen aus dem Host-Simulator — das ist
+wirklich das, was auf dem Gerät steht.</sub></p>
+
+Gebaut mit Arduino-Core 3.x (pioarduino), LVGL 8.4 und LovyanGFX
+(`Panel_ST77916`, QSPI). Eine ausführliche Bedienungsanleitung liegt als
+[PDF](RONDO-Anleitung.pdf) bei.
 
 ## Hardware
 
@@ -96,6 +121,9 @@ solange er **aus der Ladeschale genommen** ist.
 | Akku | `2adb4877-68d8-4884-bd3c-d83853bf27b8` |
 | Kerntemperatur | `(x[0] + (x[1]<<8) + 8) / 16` = °C |
 | Garraum | `(tip + max(0, ((ra - min(48, oa)) * 16 * 589) / 1487) + 8) / 16` |
+
+Ohne Verbindung zeigt der Screen das **MEATER-Logo** statt Platzhalterstrichen —
+„--.-" sah nach Fehler aus, das Logo sagt, worauf das Gerät wartet.
 
 **Zieltemperatur.** Der Drehring stellt sie (30–99 °C), daneben steht die
 Garstufe in Worten — man denkt eher in „rosa" als in 58 °C. Ist der Alarm
@@ -241,3 +269,9 @@ src/gen/             erzeugt: Ziffernfonts (Rubik 92/52/30) + Icon-Bilddaten
 assets/icons/        33 Quell-PNGs, Dateiname = ID und Anzeigename
 tools/sim/           Host-Simulator + Layout- und Heappruefung
 ```
+
+---
+
+<sub>MEATER ist eine Marke von Apption Labs. Dieses Projekt steht in keiner
+Verbindung zum Hersteller; die Anbindung nutzt das von der Community
+offengelegte Bluetooth-Protokoll.</sub>
