@@ -79,6 +79,38 @@ Läuft die **Stoppuhr** und ist sie ausgewählt, wandert stattdessen ein einzeln
 cremefarbener Punkt im Sekundentakt herum — sie hat keine Restzeit, die man
 füllen könnte, aber „läuft" liest man von weitem.
 
+### Grill-Thermometer (MEATER)
+
+Verifiziert mit einem **MEATER Plus** (Fühler `MT-PR10`, Ladeschale `MT-CP01`).
+Der Fühler funkt Bluetooth Low Energy — genau das, was der ESP32-S3 kann.
+
+Verbunden wird mit der **Ladeschale**, nicht mit dem Fühler direkt: sie ist der
+Verstärker, damit ist die Reichweite kein Thema. Es braucht **keine Kopplung**,
+der Fühler sendet von sich aus (`notify`). Er meldet sich allerdings nur,
+solange er **aus der Ladeschale genommen** ist.
+
+| | |
+|---|---|
+| Dienst | `a75cc7fc-c956-488f-ac2a-2dbc08b63a04` |
+| Temperatur | `7edda774-045e-4bbf-909b-45d1991a2876`, 8 Bytes, notify |
+| Akku | `2adb4877-68d8-4884-bd3c-d83853bf27b8` |
+| Kerntemperatur | `(x[0] + (x[1]<<8) + 8) / 16` = °C |
+| Garraum | `(tip + max(0, ((ra - min(48, oa)) * 16 * 589) / 1487) + 8) / 16` |
+
+Kennungen und Umrechnung stammen aus der offengelegten Arbeit der Community
+([meaterble](https://github.com/nathanfaber/meaterble), [ESPHome-Gist](https://gist.github.com/MortenVinding/a513c0094d0df41a4425612257b3cabc))
+und wurden am Gerät gegengeprüft. Beim Verbinden schreibt die Firmware **alle
+gefundenen Dienste und Merkmale ins Log** — das war kein Debug-Überbleibsel,
+sondern der Beweis, dass dieses Exemplar die dokumentierten Kennungen benutzt.
+Es bleibt drin: neuere Modelle (MEATER 2 Plus, SE) verwenden andere Kennungen,
+und dann sieht man das in zwei Minuten statt es zu raten.
+
+**Preis in Speicher:** NimBLE nimmt sich rund **100 KB internen RAM**. Danach
+waren nur noch 22 KB frei — zu wenig, das wäre früher oder später abgestürzt.
+Deshalb: LVGL-Pool von 128 auf 96 KB und NimBLE auf eine Verbindung und die
+reine Empfängerrolle zusammengestrichen (siehe `build_flags`). Jetzt sind
+wieder rund 55 KB frei.
+
 ### Weitere Festlegungen
 
 * Timer laufen über **absolute Zielzeitpunkte** (`esp_timer`), nicht über

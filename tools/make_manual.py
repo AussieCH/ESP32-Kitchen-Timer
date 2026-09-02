@@ -219,7 +219,7 @@ def content(st):
         "Wenn Sie sich verlaufen: einfach so lange wischen, bis Sie wieder auf einer bekannten Seite sind. "
         "Kaputtmachen können Sie nichts.", S_NOTE))
 
-    st.append(Paragraph("Die sieben Seiten", S_H1))
+    st.append(Paragraph("Die acht Seiten", S_H1))
     st.append(Paragraph(
         "Die Seiten liegen nebeneinander wie Bilder in einem Album. Nach dem Einschalten stehen Sie "
         "auf <b>Läuft gerade</b>. Von dort nach rechts wischen führt zur Übersicht, nach links zu allem anderen.", S_BODY))
@@ -228,6 +228,7 @@ def content(st):
         ("Läuft gerade", "die Startseite: eine Zeit gross, mit den Knöpfen dazu"),
         ("Neuer Timer", "hier stellen Sie eine neue Zeit ein"),
         ("Eieruhr", "rechnet die Kochzeit für Eier aus"),
+        ("Grill-Thermometer", "zeigt die Temperatur im Fleisch"),
         ("Stoppuhr", "zählt vorwärts statt rückwärts"),
         ("Vorlagen", "gespeicherte Zeiten, mit einem Tipp gestartet"),
         ("Einstellungen", "Helligkeit, Lautstärke, Akku"),
@@ -297,6 +298,16 @@ def content(st):
          "Zeile antippen, Ring drehen, <b>Kochen</b> tippen. Die Zeit läuft dann wie jede andere."],
         "Ein mittleres Ei aus dem Kühlschrank, weich"))
     st.append(screen_block(
+        shot("3e-fuehler.png"), "Grill-Thermometer",
+        ["Haben Sie ein <b>MEATER</b>-Thermometer, zeigt RONDO an, wie warm es im Fleisch ist — "
+         "gross die <b>Kerntemperatur</b>, darunter die Temperatur im Garraum und der Ladestand "
+         "des Fühlers.",
+         "Sie müssen nichts einrichten: <b>Fühler aus der Ladeschale nehmen</b>, und RONDO "
+         "verbindet sich von selbst. Der Punkt unten wird grün, sobald Werte ankommen.",
+         "<b>Wichtig:</b> Der Fühler spricht immer nur mit einem Gerät. Solange RONDO verbunden "
+         "ist, findet ihn die MEATER-App auf dem Handy nicht — und umgekehrt."],
+        "Ein Braten bei 62,4 °C"))
+    st.append(screen_block(
         shot("3d-stoppuhr.png"), "Stoppuhr",
         ["Zählt vorwärts statt rückwärts — für „wie lange köchelt das jetzt schon?“.",
          "Sie läuft im Hintergrund weiter, auch wenn Sie wegwischen. Solange sie läuft, taucht sie "
@@ -344,6 +355,13 @@ def content(st):
          "was Sie eigentlich meinten, und drehen Sie erneut."),
         ("Beim Löschen kommt eine Rückfrage.",
          "Das ist Absicht: Löschen ist der einzige Handgriff, den man nicht zurücknehmen kann."),
+        ("Die MEATER-App findet meinen Fühler nicht mehr.",
+         "Dann ist RONDO gerade damit verbunden. Der Fühler lässt immer nur ein Gerät zu. "
+         "Trennen Sie RONDO kurz vom Strom, dann findet die App ihn wieder."),
+        ("Das Thermometer zeigt nur Striche.",
+         "Der Fühler sendet nur, wenn er <b>aus der Ladeschale</b> genommen ist. Steckt er drin, "
+         "bleibt es bei „suche“. Ausserdem sollte die Ladeschale in der Nähe stehen — sie ist "
+         "der Verstärker für das Funksignal."),
         ("Das Gerät reagiert gar nicht mehr.",
          "Kurz vom Strom trennen und wieder anstecken. Vorlagen und Einstellungen bleiben erhalten."),
     ]
