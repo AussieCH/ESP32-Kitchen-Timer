@@ -37,6 +37,9 @@
 #define KNOB_PIN_LEFT   2
 #define KNOB_PIN_RIGHT  1
 #define KNOB_INVERT     0
+// Am Geraet gemessen: der Knopf pulst ZWEIMAL pro Rastung - einmal auf halbem
+// Weg, einmal beim Einrasten. Ohne Teiler springt die Anzeige beim halben Klick.
+#define KNOB_PULSES_PER_DETENT 2
 
 // ---- Audio PCM5100A (I2S) -------------------------------------------------
 #define I2S_DAC_BCK     3
