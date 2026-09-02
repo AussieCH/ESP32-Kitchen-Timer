@@ -69,6 +69,21 @@ static void check(lv_obj_t *o, const char *scenario, lv_area_t clip) {
     check(lv_obj_get_child(o, i), scenario, child_clip);
 }
 
+// Das Ruhebild lebt von seiner Bewegung. Ein Standbild sieht auch dann richtig
+// aus, wenn die Animation gar nicht laeuft - deshalb hier zwei Aufnahmen im
+// Abstand vergleichen, statt sich auf einen Screenshot zu verlassen.
+static void check_idle_animation() {
+  static lv_color_t before[SCR_W * SCR_H];
+  memcpy(before, fb, sizeof(before));
+  settle(1400);
+  int diff = 0;
+  for (int i = 0; i < SCR_W * SCR_H; i++)
+    if (memcmp(&before[i], &fb[i], sizeof(lv_color_t)) != 0) diff++;
+  printf("[ruhebild] %s (%d Bildpunkte veraendert)\n",
+         diff > 200 ? "Punkt wandert" : "STEHT STILL - Animation laeuft nicht", diff);
+  if (diff <= 200) violations++;
+}
+
 static void scene(const char *name) {
   settle(400);
   shot(name);
@@ -103,6 +118,7 @@ int main() {
                          // ueberall das Logo statt der Seite
 
   scene("1-aktiv-leer");
+  check_idle_animation();
 
   timer_start(20 * 60, 2, 0);          // Pasta 20:00
   timer_start(3 * 60 + 30, 1, 9);      // Ei 3:30

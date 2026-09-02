@@ -25,6 +25,7 @@ static lv_obj_t *s_btn_pause, *s_btn_plus, *s_btn_del;
 static lv_obj_t *s_empty, *s_stop_area, *s_idle_mark;
 static lv_timer_t *s_idle_timer = nullptr;
 static int s_idle_pos = 0;
+static bool s_idle_running = false;
 
 #define IDLE_STEP_MS 620          // langsam: eine Runde dauert gut acht Sekunden
 
@@ -144,6 +145,16 @@ static void idle_cb(lv_timer_t *) {
   rondo_mark_highlight(s_idle_mark, s_idle_pos);
 }
 
+// Am Zustand ausrichten, nicht am Uebergang: beim Einschalten ist das Ruhebild
+// von Anfang an sichtbar, ein Uebergang findet also nie statt - und die
+// Animation waere nie angelaufen.
+static void idle_anim(bool on) {
+  if (on == s_idle_running || !s_idle_timer) return;
+  s_idle_running = on;
+  if (on) lv_timer_resume(s_idle_timer);
+  else    lv_timer_pause(s_idle_timer);
+}
+
 // ---------------------------------------------------------------- Aufbau
 void ui_active_create(lv_obj_t *p) {
   s_arc = lv_arc_create(p);
@@ -259,16 +270,14 @@ void ui_active_update() {
     if (lv_obj_has_flag(s_empty, LV_OBJ_FLAG_HIDDEN)) {
       lv_obj_clear_flag(s_empty, LV_OBJ_FLAG_HIDDEN);
       lv_obj_move_foreground(s_empty);
-      lv_timer_resume(s_idle_timer);
     }
+    idle_anim(true);
     lv_obj_add_flag(s_stop_area, LV_OBJ_FLAG_HIDDEN);
     s_paint_sig = 0xFFFFFFFF;
     return;
   }
-  if (!lv_obj_has_flag(s_empty, LV_OBJ_FLAG_HIDDEN)) {
-    lv_obj_add_flag(s_empty, LV_OBJ_FLAG_HIDDEN);
-    lv_timer_pause(s_idle_timer);          // nicht im Verborgenen weiterlaufen
-  }
+  if (!lv_obj_has_flag(s_empty, LV_OBJ_FLAG_HIDDEN)) lv_obj_add_flag(s_empty, LV_OBJ_FLAG_HIDDEN);
+  idle_anim(false);                        // nicht im Verborgenen weiterlaufen
 
   if (sel_is_stopwatch()) { show_stopwatch(pos, n); return; }
 
