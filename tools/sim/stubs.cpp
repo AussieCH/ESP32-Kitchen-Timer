@@ -25,6 +25,7 @@ void leds_init() {}
 void leds_progress(uint32_t, float) {}
 void leds_alarm_phase(uint32_t, bool) {}
 void leds_off() {}
+void leds_single(int, uint32_t) {}
 bool leds_present() { return false; }
 
 void leds_countdown(float, uint32_t) {}

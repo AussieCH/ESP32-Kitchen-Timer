@@ -43,6 +43,9 @@ void      app_apply_brightness(int pct);   // in main.cpp
 void      ui_confirm(const char *question, ui_yes_cb_t yes_cb, void *user);
 
 // --- Screens ---------------------------------------------------------------
+void ui_splash_show();                // RONDO-Logo beim Start
+bool ui_splash_active();
+
 void ui_overview_create(lv_obj_t *p); void ui_overview_update();
 void ui_overview_knob(int d, int step);
 

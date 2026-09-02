@@ -80,6 +80,14 @@ void leds_countdown(float frac, uint32_t rest_s) {
   leds_progress(c, frac);
 }
 
+void leds_single(int idx, uint32_t rgb) {
+  s_ring.setBrightness(RING_MAX_BRIGHT);
+  for (int i = 0; i < LED_RING_COUNT; i++)
+    s_ring.setPixelColor(i, i == (idx % LED_RING_COUNT) ? rgb : 0);
+  s_ring.show();
+  s_on = true;
+}
+
 void leds_alarm_phase(uint32_t rgb, bool on) {
   s_ring.setBrightness(on ? RING_MAX_BRIGHT : 0);
   uint32_t c = on ? rgb : 0;
@@ -93,6 +101,7 @@ void leds_alarm_phase(uint32_t rgb, bool on) {
 void leds_init() {}
 void leds_progress(uint32_t, float) {}
 void leds_countdown(float, uint32_t) {}
+void leds_single(int, uint32_t) {}
 void leds_alarm_phase(uint32_t, bool) {}
 void leds_off() {}
 bool leds_present() { return false; }

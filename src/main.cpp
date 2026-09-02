@@ -123,6 +123,7 @@ void setup() {
   lv_indev_drv_register(&indev_drv);
 
   ui_init();
+  ui_splash_show();          // RONDO-Logo, laeuft im Hintergrund aus
   s_last_input_ms = millis();
   app_apply_brightness(setting_brightness());
   Serial.printf("[boot] frei: %u B intern, %u B PSRAM\n",
@@ -184,7 +185,7 @@ void loop() {
   // LED-Ring zeigt die Restzeit des naechsten Timers - auch bei dunklem Display
   // sieht man so, dass etwas laeuft. Im Alarm gehoert der Ring dem Blinktakt.
   static uint32_t t_ring = 0;
-  if (leds_present() && now - t_ring >= 250) {
+  if (leds_present() && !ui_splash_active() && now - t_ring >= 250) {
     t_ring = now;
     if (timer_first_ringing() < 0) {
       ActiveTimer *t = active_at(0);

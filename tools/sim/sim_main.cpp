@@ -94,6 +94,11 @@ int main() {
   timers_init();
   ui_init();
 
+  ui_splash_show();
+  settle(200);
+  shot("0-startbild");
+  printf("[0-startbild]\n");
+
   scene("1-aktiv-leer");
 
   timer_start(20 * 60, 2, 0);          // Pasta 20:00
