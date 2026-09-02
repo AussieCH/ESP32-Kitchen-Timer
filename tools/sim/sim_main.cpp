@@ -24,9 +24,8 @@ static void settle(int ms) {
 }
 
 static void shot(const char *name) {
-  const char *prefix = getenv("SIM_PREFIX");
   char path[256];
-  snprintf(path, sizeof(path), "tools/sim/out/%s%s.ppm", prefix ? prefix : "", name);
+  snprintf(path, sizeof(path), "tools/sim/out/%s.ppm", name);
   FILE *f = fopen(path, "wb");
   fprintf(f, "P6\n%d %d\n255\n", SCR_W, SCR_H);
   for (int i = 0; i < SCR_W * SCR_H; i++) {

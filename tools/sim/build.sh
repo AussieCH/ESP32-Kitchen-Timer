@@ -4,15 +4,7 @@ set -e
 cd "$(dirname "$0")/../.."
 LV=.pio/libdeps/knob18/lvgl
 
-# Board waehlen: ./tools/sim/build.sh [waveshare|guition]
-case "${1:-waveshare}" in
-  guition)   BOARD=-DBOARD_GUITION_K718;   PREFIX=g- ;;
-  waveshare) BOARD=-DBOARD_WAVESHARE_KNOB; PREFIX=    ;;
-  *) echo "unbekanntes Board: $1"; exit 1 ;;
-esac
-export SIM_PREFIX=$PREFIX
-
-INC="-I include -I src -I tools/sim/shims -I $LV $BOARD -DLV_CONF_INCLUDE_SIMPLE -DLV_LVGL_H_INCLUDE_SIMPLE"
+INC="-I include -I src -I tools/sim/shims -I $LV -DLV_CONF_INCLUDE_SIMPLE -DLV_LVGL_H_INCLUDE_SIMPLE"
 
 if [ ! -f tools/sim/obj/lvgl.a ]; then
   echo "LVGL einmalig uebersetzen ..."

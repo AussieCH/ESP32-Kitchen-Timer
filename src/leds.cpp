@@ -8,7 +8,6 @@
 // also lange nach dem Reset.
 #include "leds.h"
 
-#if HAS_LEDRING
 
 #include <Arduino.h>
 #include <Adafruit_NeoPixel.h>
@@ -96,14 +95,3 @@ void leds_alarm_phase(uint32_t rgb, bool on) {
   s_on = true;
 }
 
-#else   // Board ohne Ring
-
-void leds_init() {}
-void leds_progress(uint32_t, float) {}
-void leds_countdown(float, uint32_t) {}
-void leds_single(int, uint32_t) {}
-void leds_alarm_phase(uint32_t, bool) {}
-void leds_off() {}
-bool leds_present() { return false; }
-
-#endif

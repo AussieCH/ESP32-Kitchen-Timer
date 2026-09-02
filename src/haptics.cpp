@@ -10,7 +10,6 @@
 #include "board_pins.h"
 #include "haptics.h"
 
-#if HAS_HAPTIC
 
 #define REG_MODE      0x01
 #define REG_RTP       0x02
@@ -89,12 +88,3 @@ void haptic_buzz(bool on) {
   }
 }
 
-#else   // Board ohne Haptik
-
-void haptic_init() {}
-void haptic_click() {}
-void haptic_bump() {}
-void haptic_buzz(bool) {}
-bool haptic_present() { return false; }
-
-#endif

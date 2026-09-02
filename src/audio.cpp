@@ -6,7 +6,6 @@
 // ein Strappingpin, wir treiben ihn erst hier, lange nach dem Reset.
 #include "audio.h"
 
-#if HAS_AUDIO
 
 #include <Arduino.h>
 #include <ESP_I2S.h>
@@ -136,15 +135,3 @@ void audio_stop() {
 
 void audio_set_fade_in(bool on) { s_fade_in = on; s_play_start_ms = millis(); }
 
-#else   // Board ohne Lautsprecher
-
-void audio_init() {}
-void audio_set_volume(int) {}
-int  audio_get_volume() { return 0; }
-void audio_play(const Melody *, bool) {}
-void audio_stop() {}
-bool audio_is_playing() { return false; }
-void audio_set_fade_in(bool) {}
-bool audio_present() { return false; }
-
-#endif

@@ -10,12 +10,8 @@
 #include "melodies.h"
 #include "battery.h"
 
-#if HAS_AUDIO
-  #define ROW_COUNT 2
-  #define ROW_VOL   1
-#else
-  #define ROW_COUNT 1
-#endif
+#define ROW_COUNT 2
+#define ROW_VOL   1
 
 static lv_obj_t *s_box[ROW_COUNT], *s_bar[ROW_COUNT], *s_val[ROW_COUNT];
 static lv_obj_t *s_batt;
@@ -95,22 +91,10 @@ void ui_settings_create(lv_obj_t *p) {
   lv_obj_set_style_text_color(title, col_dim(), 0);
   lv_obj_align(title, LV_ALIGN_CENTER, 0, -142);
 
-#if HAS_AUDIO
   make_row(p, LV_SYMBOL_SETTINGS "  Helligkeit",  -70, 0);
   make_row(p, LV_SYMBOL_VOLUME_MAX "  Lautstaerke", 16, ROW_VOL);
   lv_obj_t *b = make_button(p, LV_SYMBOL_BELL " Alarm testen", 200, 54, test_cb, nullptr);
   lv_obj_align(b, LV_ALIGN_CENTER, 0, 100);
-#else
-  make_row(p, LV_SYMBOL_SETTINGS "  Helligkeit", -40, 0);
-  lv_obj_t *b = make_button(p, LV_SYMBOL_BELL " Alarm testen", 200, 54, test_cb, nullptr);
-  lv_obj_align(b, LV_ALIGN_CENTER, 0, 70);
-
-  lv_obj_t *hint = lv_label_create(p);
-  lv_label_set_text(hint, "Drehring stellt die Helligkeit");
-  lv_obj_set_style_text_font(hint, &lv_font_montserrat_14, 0);
-  lv_obj_set_style_text_color(hint, col_dim(), 0);
-  lv_obj_align(hint, LV_ALIGN_CENTER, 0, 118);
-#endif
 
   s_batt = lv_label_create(p);
   lv_obj_set_style_text_font(s_batt, &lv_font_montserrat_14, 0);
@@ -121,9 +105,7 @@ void ui_settings_create(lv_obj_t *p) {
 void ui_settings_update() {
   int v[ROW_COUNT];
   v[0] = setting_brightness();
-#if HAS_AUDIO
   v[ROW_VOL] = audio_get_volume();
-#endif
   // Akkuzeile: auf dem Waveshare misst der Teiler das 5V-Rail, nicht die Zelle -
   // eine Prozentzahl waere dort erfunden, deshalb nur die Spannung.
   int pct = battery_percent();
@@ -157,13 +139,10 @@ void ui_settings_update() {
 
 void ui_settings_knob(int d, int step) {
   int delta = d * (step > 1 ? 5 : 2);
-#if HAS_AUDIO
   if (s_focus == ROW_VOL) {
     audio_set_volume(audio_get_volume() + delta);
     if (!audio_is_playing()) audio_play(&MELODY_TEST, false);   // hoerbar statt geraten
-  } else
-#endif
-  {
+  } else {
     setting_set_brightness(setting_brightness() + delta);
     app_apply_brightness(setting_brightness());
   }

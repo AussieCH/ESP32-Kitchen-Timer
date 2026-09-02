@@ -15,9 +15,7 @@
 
 static lv_obj_t *s_lbl[3], *s_sep[2], *s_row;
 static lv_obj_t *s_btn_icon, *s_icon_prev, *s_btn_start;
-#if HAS_AUDIO
 static lv_obj_t *s_btn_mel;
-#endif
 static int s_val[3] = { 0, 5, 0 };
 static int s_focus = F_M;
 static uint8_t s_icon = 0, s_melody = 9;   // 9 = Fuer Elise
@@ -34,10 +32,8 @@ static void refresh_focus() {
   }
   lv_obj_set_style_border_width(s_btn_icon, s_focus == F_ICON ? 2 : 0, 0);
   lv_obj_set_style_border_color(s_btn_icon, lv_palette_main(LV_PALETTE_AMBER), 0);
-#if HAS_AUDIO
   lv_obj_set_style_border_width(s_btn_mel, s_focus == F_MELODY ? 2 : 0, 0);
   lv_obj_set_style_border_color(s_btn_mel, lv_palette_main(LV_PALETTE_AMBER), 0);
-#endif
 }
 
 static void seg_cb(lv_event_t *e) {
@@ -55,13 +51,11 @@ static void quick_cb(lv_event_t *e) {
 
 static void icon_cb(lv_event_t *) { s_focus = F_ICON; ui_new_update(); }
 
-#if HAS_AUDIO
 static void mel_cb(lv_event_t *) {
   s_focus = F_MELODY;
   audio_play(&MELODIES[s_melody], false);   // beim Antippen gleich anspielen
   ui_new_update();
 }
-#endif
 
 static void start_cb(lv_event_t *) {
   uint32_t total = s_val[F_H] * 3600UL + s_val[F_M] * 60UL + s_val[F_S];
@@ -138,7 +132,6 @@ void ui_new_create(lv_obj_t *p) {
     make_button(chips, t, 66, 40, quick_cb, (void *)(intptr_t)i);
   }
 
-#if HAS_AUDIO
   s_btn_mel = make_button(p, "", 146, 54, mel_cb, nullptr);
   lv_obj_align(s_btn_mel, LV_ALIGN_CENTER, -75, 32);
 
@@ -149,15 +142,6 @@ void ui_new_create(lv_obj_t *p) {
   lv_obj_t *il = lv_obj_get_child(s_btn_icon, 0);
   lv_obj_set_width(il, 92);
   lv_obj_align(il, LV_ALIGN_RIGHT_MID, -4, 0);
-#else
-  s_btn_icon = make_button(p, "", 240, 54, icon_cb, nullptr);
-  lv_obj_align(s_btn_icon, LV_ALIGN_CENTER, 0, 32);
-  s_icon_prev = icon_create(s_btn_icon, 40);
-  lv_obj_align(s_icon_prev, LV_ALIGN_LEFT_MID, 6, 0);
-  lv_obj_t *il = lv_obj_get_child(s_btn_icon, 0);
-  lv_obj_set_width(il, 176);
-  lv_obj_align(il, LV_ALIGN_RIGHT_MID, -8, 0);
-#endif
 
   s_btn_start = make_button(p, LV_SYMBOL_PLAY " Start", 168, 54, start_cb, nullptr);
   lv_obj_align(s_btn_start, LV_ALIGN_CENTER, -30, 104);
@@ -177,10 +161,8 @@ void ui_new_update() {
   lv_label_set_text_fmt(s_lbl[F_S], "%02d", s_val[F_S]);
 
   button_set_text(s_btn_icon, icon_name(s_icon));
-#if HAS_AUDIO
   char mel[24]; snprintf(mel, sizeof(mel), LV_SYMBOL_AUDIO " %s", MELODIES[s_melody].name);
   button_set_text(s_btn_mel, mel);
-#endif
   icon_set(s_icon_prev, s_icon, lv_color_white());
   refresh_focus();
 }
@@ -193,12 +175,10 @@ void ui_new_knob(int d, int step) {
     case F_ICON:
       s_icon = (uint8_t)((s_icon + d % ICON_COUNT + ICON_COUNT) % ICON_COUNT);
       break;
-#if HAS_AUDIO
     case F_MELODY:
       s_melody = (uint8_t)((s_melody + d % MELODY_COUNT + MELODY_COUNT) % MELODY_COUNT);
       audio_play(&MELODIES[s_melody], false);   // sonst waehlt man blind
       break;
-#endif
   }
   ui_new_update();
 }

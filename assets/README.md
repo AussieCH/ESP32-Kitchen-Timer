@@ -35,9 +35,7 @@ lassen, `ICON_COUNT` in `src/icons.h` anpassen.
 ## Melodien
 
 20 Stück in `src/melodies.cpp` als `{Frequenz, Dauer}`-Tabellen (Format aus
-`Toene.txt`). Hörbar nur auf Boards mit Lautsprecher — beim **Guition
-JC3636K718C** also ja, beim **Waveshare Knob** nein (dessen DAC gibt nur auf die
-3.5-mm-Klinke aus, dort ist der Alarm optisch und haptisch).
+`Toene.txt`).
 
 ```c
 static const Note m21[] = { {C5,250}, {E5,250}, {REST,200}, {G5,400} };
