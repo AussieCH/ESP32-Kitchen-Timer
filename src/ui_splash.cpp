@@ -12,8 +12,10 @@
 #define DOTS      13
 #define RING_R    118        // Radius des Punktekreises (Vorlage: 57 % vom Halbmesser)
 #define DOT_D      28
-#define STEP_MS    90
-#define HOLD_STEPS  4        // kurz stehenbleiben, bevor es ausblendet
+// Gesamtdauer rund 3.6 s: knapp zwei Sekunden fuer die Runde, gut eine Sekunde
+// Standzeit, dann ausblenden. Schneller nimmt man das Logo nicht wahr.
+#define STEP_MS   150
+#define HOLD_STEPS  8        // stehenbleiben, bevor es ausblendet
 
 #define COL_CREAM  0xFDF4E9
 #define COL_ORANGE 0xEE7C25
@@ -40,7 +42,7 @@ static void step_cb(lv_timer_t *) {
     lv_obj_set_style_bg_color(s_dot[0], lv_color_hex(COL_ORANGE), 0);  // zurueck nach oben
     leds_single(0, COL_ORANGE);
   } else if (s_step == DOTS + HOLD_STEPS) {
-    lv_obj_fade_out(s_root, 260, 0);
+    lv_obj_fade_out(s_root, 400, 0);
   } else if (s_step > DOTS + HOLD_STEPS + 3) {
     finish();
     return;
