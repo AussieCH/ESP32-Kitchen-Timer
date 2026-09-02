@@ -163,9 +163,11 @@ wieder rund 55 KB frei.
 * Ändert sich das Datenformat der Vorlagen oder die Icon-Reihenfolge, muss
   `PRESET_VERSION` in `src/timers.cpp` hoch — sonst zeigen alte Vorlagen auf
   falsche Icons.
-* **Der MEATER-Fühler lässt nur EINE Verbindung zu.** Solange RONDO verbunden
-  ist, sieht die MEATER-App nichts — und umgekehrt. Verbunden wird mit der
-  Ladeschale (dem Verstärker), nicht mit dem Fühler direkt.
+* **RONDO übernimmt den Fühler.** Ein MEATER-Fühler lässt genau eine Verbindung
+  zu, und die gehört hier dem Gerät — die Hersteller-App bleibt aussen vor. Das
+  ist Absicht: RONDO ist für jemanden gebaut, der seine Temperaturen kennt und
+  keinen Assistenten braucht, sondern eine Zahl und einen Alarm. Verbunden wird
+  mit der Ladeschale (dem Verstärker), nicht mit dem Fühler direkt.
 * **LVGL-Heap: 96 KB.** Mit 64 KB schlug `lv_mem_alloc` beim Aufbau der
   Alarmmasken fehl, und LVGLs Assert-Handler ist ein `while(1)` — das Gerät wäre
   im Alarm stillschweigend stehengeblieben. Der Simulator schreibt zu jedem

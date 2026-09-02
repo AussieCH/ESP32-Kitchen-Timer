@@ -304,8 +304,9 @@ def content(st):
          "des Fühlers.",
          "Sie müssen nichts einrichten: <b>Fühler aus der Ladeschale nehmen</b>, und RONDO "
          "verbindet sich von selbst. Der Punkt unten wird grün, sobald Werte ankommen.",
-         "<b>Wichtig:</b> Der Fühler spricht immer nur mit einem Gerät. Solange RONDO verbunden "
-         "ist, findet ihn die MEATER-App auf dem Handy nicht — und umgekehrt."],
+         "Der Fühler spricht immer nur mit einem Gerät — und das ist hier RONDO. Die "
+         "Hersteller-App bleibt aussen vor, solange das Thermometer verbunden ist. So ist es "
+         "gedacht: eine Zahl, ein Alarm, kein Assistent."],
         "Ein Braten bei 62,4 °C",
         extra=[
             Paragraph("<b>Damit das Fleisch Sie ruft</b>", S_H2),
@@ -365,8 +366,8 @@ def content(st):
         ("Beim Löschen kommt eine Rückfrage.",
          "Das ist Absicht: Löschen ist der einzige Handgriff, den man nicht zurücknehmen kann."),
         ("Die MEATER-App findet meinen Fühler nicht mehr.",
-         "Dann ist RONDO gerade damit verbunden. Der Fühler lässt immer nur ein Gerät zu. "
-         "Trennen Sie RONDO kurz vom Strom, dann findet die App ihn wieder."),
+         "Dann ist RONDO damit verbunden — der Fühler lässt immer nur ein Gerät zu. Brauchen "
+         "Sie die App doch einmal, trennen Sie RONDO kurz vom Strom."),
         ("Der Temperatur-Alarm hat nicht ausgelöst.",
          "Er muss scharf sein — im Thermometer-Screen steht dann <b>Alarm aus</b> auf dem Knopf "
          "(das ist der Knopf zum Ausschalten) und der Zielkasten ist orange umrandet. Er löst "
