@@ -51,6 +51,7 @@ void ui_overview_knob(int d, int step);
 
 void ui_active_create(lv_obj_t *p);   void ui_active_update();
 void ui_active_focus_id(uint32_t id);
+void ui_active_focus_stopwatch();
 void ui_active_knob(int d, int step); void ui_active_gesture(lv_dir_t dir);
 
 void ui_new_create(lv_obj_t *p);      void ui_new_update();
@@ -61,7 +62,14 @@ void ui_egg_create(lv_obj_t *p);      void ui_egg_update();
 void ui_egg_knob(int d, int step);
 
 void ui_stopwatch_create(lv_obj_t *p); void ui_stopwatch_update();
-bool ui_stopwatch_running();
+bool     ui_stopwatch_running();
+uint32_t ui_stopwatch_elapsed_ms();
+void     ui_stopwatch_toggle();
+void     ui_stopwatch_reset();
+
+// Was der LED-Ring gerade zeigen soll (Farbe des ausgewaehlten Timers).
+// false = nichts anzuzeigen.
+bool ui_ring_source(uint32_t *rgb, float *frac, uint32_t *rest_s, bool *stopwatch);
 
 void ui_presets_create(lv_obj_t *p);  void ui_presets_update();
 void ui_presets_knob(int d, int step);

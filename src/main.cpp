@@ -188,12 +188,12 @@ void loop() {
   if (leds_present() && !ui_splash_active() && now - t_ring >= 250) {
     t_ring = now;
     if (timer_first_ringing() < 0) {
-      ActiveTimer *t = active_at(0);
-      if (t && !t->expired) {
-        uint32_t total = t->total_s * 1000UL;
-        uint32_t rest_ms = timer_remaining_ms(t);
-        float frac = total ? (float)rest_ms / total : 0.0f;
-        leds_countdown(frac, (rest_ms + 999) / 1000);
+      uint32_t rgb; float frac; uint32_t rest_s; bool stopwatch;
+      if (ui_ring_source(&rgb, &frac, &rest_s, &stopwatch)) {
+        // Stoppuhr hat keine Restzeit: statt eines Bogens wandert ein Punkt
+        // im Sekundentakt - das liest sich von weitem als "laeuft".
+        if (stopwatch) leds_single((int)(rest_s % LED_RING_COUNT), rgb);
+        else           leds_timer(rgb, frac, rest_s);
       } else {
         leds_off();
       }

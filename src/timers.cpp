@@ -104,7 +104,18 @@ int timer_start(uint32_t total_s, uint8_t icon, uint8_t melody) {
     t->total_s = total_s;
     t->end_ms = now_ms() + (int64_t)total_s * 1000;
     t->icon = icon; t->melody = melody;
-    t->color = s_next_color++ % 8;
+    // Farbe, die gerade kein anderer laufender Timer hat - erst wenn alle acht
+    // vergeben sind, faengt es von vorne an. Die Farbe ist die Identitaet des
+    // Timers, auf dem Schirm wie auf dem LED-Ring.
+    bool used[8] = { false };
+    for (int k = 0; k < MAX_ACTIVE; k++)
+      if (s_act[k].used && &s_act[k] != t) used[s_act[k].color % 8] = true;
+    t->color = s_next_color % 8;
+    for (int c = 0; c < 8; c++) {
+      int cand = (s_next_color + c) % 8;
+      if (!used[cand]) { t->color = cand; break; }
+    }
+    s_next_color = (uint8_t)((t->color + 1) % 8);
     resort();
     for (int k = 0; k < s_sorted_n; k++) if (s_sorted[k] == t) return k;
     return 0;

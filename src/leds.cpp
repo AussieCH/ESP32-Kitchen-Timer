@@ -53,20 +53,8 @@ void leds_progress(uint32_t rgb, float frac) {
   s_on = true;
 }
 
-// Gruen (viel Zeit) ueber Amber nach Rot (gleich abgelaufen). Der Verlauf haengt
-// am Anteil, nicht an absoluten Sekunden - sonst waere ein 10-Minuten-Timer die
-// ganze Zeit rot und ein 2-Stunden-Timer nie.
-static uint32_t gradient(float frac) {
-  if (frac > 1) frac = 1;
-  if (frac < 0) frac = 0;
-  uint8_t r, g;
-  if (frac > 0.5f) { float t = (frac - 0.5f) * 2.0f; r = (uint8_t)(255 * (1 - t)); g = 255; }
-  else             { float t = frac * 2.0f;          r = 255; g = (uint8_t)(210 * t); }
-  return ((uint32_t)r << 16) | ((uint32_t)g << 8);
-}
-
-void leds_countdown(float frac, uint32_t rest_s) {
-  uint32_t c = gradient(frac);
+void leds_timer(uint32_t rgb, float frac, uint32_t rest_s) {
+  uint32_t c = rgb;
   if (rest_s <= 10) {                        // letzte zehn Sekunden: pulsieren
     bool on = (millis() / 300) % 2 == 0;
     if (!on) { s_ring.setBrightness(RING_IDLE_BRIGHT / 3); }

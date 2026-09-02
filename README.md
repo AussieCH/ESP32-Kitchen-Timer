@@ -33,11 +33,11 @@ Screens, unten zeigen Punkte die Position; nach dem Start steht man auf *Aktiv*:
 
 | Screen | Inhalt | Drehring |
 |---|---|---|
-| **Übersicht** | kompakte Liste aller laufenden Timer mit Restzeit und Zustand; **antippen holt einen in den Aktiv-Screen** | scrollt die Liste |
-| **Aktiv** | Restzeit groß, außen ein Fortschrittsring in der Timer-Farbe, Buttons *Pause/Weiter* und *+1 Min*, oben ✕ (mit Rückfrage) | wechselt zwischen laufenden Timern |
+| **Übersicht** | kompakte Liste aller laufenden Timer (und der Stoppuhr) mit Zeit und Zustand; **antippen holt einen in den Aktiv-Screen** | scrollt die Liste |
+| **Aktiv** | Restzeit groß, außen ein Fortschrittsring in der Timer-Farbe, Buttons *Pause/Weiter* und *+1 Min*, oben ✕ (mit Rückfrage). Eine laufende **Stoppuhr** ist hier ein Eintrag wie ein Timer | wechselt zwischen laufenden Timern und der Stoppuhr |
 | **Neuer Timer** | `hh:mm:ss` (Segment antippen), Schnellwahl 3/5/10/15 Min, Melodie- und Icon-Button, *Start* + ✕ | stellt Segment, Melodie oder Icon |
 | **Eieruhr** | Größe, Kühlschrank/Zimmer, weich/wachsweich/hart → rechnet die Kochzeit und startet den Timer | stellt die gewählte Zeile |
-| **Stoppuhr** | zählt hoch, mit Zehnteln; läuft im Hintergrund weiter | — |
+| **Stoppuhr** | zählt hoch, mit Zehnteln; läuft im Hintergrund weiter und erscheint dann auch im Aktiv-Screen und in der Übersicht | — |
 | **Vorlagen** | Liste; **tippen = starten**, **lang tippen** = Starten/Editieren/Löschen | scrollt die Liste |
 | **Einstellungen** | Helligkeit, Lautstärke, *Alarm testen*, Akkuzustand | stellt die gewählte Zeile |
 
@@ -60,11 +60,23 @@ stehen.
 
 ### LED-Ring
 
-Im Betrieb zeigt er die Restzeit des nächsten Timers als leuchtenden Bogen mit
-Farbverlauf **grün → amber → rot**, in den letzten zehn Sekunden pulsierend.
-Der Verlauf hängt am Anteil der Restzeit, nicht an absoluten Sekunden — sonst
-wäre ein 10-Minuten-Timer durchgehend rot und ein 2-Stunden-Timer nie. Das
-sieht man quer durch die Küche, auch wenn das Display längst dunkel ist.
+Der Ring zeigt den Timer, der gerade im Aktiv-Screen steht — nicht immer den
+ersten. Schaltet man mit dem Drehring weiter, wechselt er mit.
+
+**Die Farbe ist die Identität des Timers**, nicht sein Fortschritt: jeder
+laufende Timer bekommt eine eigene aus einer Palette von acht (vergeben wird
+die erste, die kein anderer laufender Timer hat), und dieselbe Farbe färbt
+Icon, Fortschrittsbogen und LED-Ring. Der Ring füllt sich anteilig mit der
+Restzeit; in den letzten zehn Sekunden pulsiert er.
+
+> Ein früherer Entwurf ließ den Ring von grün über amber nach rot laufen. Das
+> beißt sich mit der Timer-Identität — eine Farbe kann nicht gleichzeitig
+> „welcher Timer" und „wie viel Restzeit" bedeuten. Geblieben ist das
+> Pulsieren am Ende, das signalisiert Dringlichkeit ohne die Farbe zu belegen.
+
+Läuft die **Stoppuhr** und ist sie ausgewählt, wandert stattdessen ein einzelner
+cremefarbener Punkt im Sekundentakt herum — sie hat keine Restzeit, die man
+füllen könnte, aber „läuft" liest man von weitem.
 
 ### Weitere Festlegungen
 
@@ -174,7 +186,7 @@ src/input_knob.*     Impulsdekodierung mit Teiler und Gegenleitungssperre
 src/haptics.*        DRV2605 als LRA: Rastung, Bestaetigung, Alarm-Schnarren
 src/audio.*          I2S-Tonsynthese, Lautstaerke, Fade-in
 src/melodies.*       20 Alarmmelodien als Notentabellen
-src/leds.*           WS2812-Ring: Restzeit mit Farbverlauf, Alarmblinken, Logo
+src/leds.*           WS2812-Ring: Restzeit in der Timer-Farbe, Alarmblinken, Logo
 src/battery.*        Spannungsmessung mit Ueberabtastung und Kennlinie
 src/timers.*         Datenmodell, Ablauflogik, NVS
 src/ui_splash.cpp    RONDO-Startbild

@@ -18,7 +18,8 @@ static void row_cb(lv_event_t *e) {
   if (i >= s_n) return;
   s_sel = i;
   haptic_bump();
-  ui_active_focus_id(s_ids[i]);
+  if (s_ids[i] == 0) ui_active_focus_stopwatch();   // Kennung 0 = Stoppuhr
+  else               ui_active_focus_id(s_ids[i]);
   ui_goto(TILE_ACTIVE);
   ui_active_update();
 }
@@ -29,7 +30,8 @@ static void mark_selection() {
 }
 
 static uint32_t signature() {
-  uint32_t s = (uint32_t)active_count() * 2654435761u;
+  uint32_t s = (uint32_t)active_count() * 2654435761u
+             + (ui_stopwatch_running() ? 77771u : 0u);
   for (int i = 0; i < active_count(); i++) {
     ActiveTimer *t = active_at(i);
     s ^= (t->id * 31u + t->icon * 7u + (t->paused ? 3u : 0u)
@@ -40,12 +42,14 @@ static uint32_t signature() {
 
 static void rebuild() {
   lv_obj_clean(s_list);
-  s_n = active_count();
+  int timers = active_count();
+  s_n = timers + (ui_stopwatch_running() ? 1 : 0);
   for (int i = 0; i < s_n; i++) {
-    ActiveTimer *t = active_at(i);
-    s_ids[i] = t->id;
-    lv_color_t c = timer_color(t->color);
-    bool alarm = t->ringing || t->expired;
+    bool is_sw = (i >= timers);
+    ActiveTimer *t = is_sw ? nullptr : active_at(i);
+    s_ids[i] = is_sw ? 0 : t->id;
+    lv_color_t c = is_sw ? lv_color_hex(0xFDF4E9) : timer_color(t->color);
+    bool alarm = !is_sw && (t->ringing || t->expired);
 
     lv_obj_t *row = lv_obj_create(s_list);
     s_rows[i] = row;
@@ -59,9 +63,16 @@ static void rebuild() {
     lv_obj_add_flag(row, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(row, row_cb, LV_EVENT_CLICKED, (void *)(intptr_t)i);
 
-    lv_obj_t *ic = icon_create(row, 40);
-    lv_obj_align(ic, LV_ALIGN_LEFT_MID, 2, 0);
-    icon_set(ic, t->icon, c);
+    if (is_sw) {                                  // Stoppuhr: Symbol statt Icon
+      lv_obj_t *sym = lv_label_create(row);
+      lv_label_set_text(sym, LV_SYMBOL_PLAY);
+      lv_obj_set_style_text_color(sym, c, 0);
+      lv_obj_align(sym, LV_ALIGN_LEFT_MID, 14, 0);
+    } else {
+      lv_obj_t *ic = icon_create(row, 40);
+      lv_obj_align(ic, LV_ALIGN_LEFT_MID, 2, 0);
+      icon_set(ic, t->icon, c);
+    }
 
     s_time_lbl[i] = lv_label_create(row);
     lv_obj_set_style_text_font(s_time_lbl[i], &font_time_30, 0);
@@ -69,7 +80,8 @@ static void rebuild() {
     lv_obj_align(s_time_lbl[i], LV_ALIGN_LEFT_MID, 50, 0);
 
     lv_obj_t *nl = lv_label_create(row);
-    lv_label_set_text(nl, t->paused ? "pausiert" : (alarm ? "fertig" : icon_name(t->icon)));
+    lv_label_set_text(nl, is_sw ? (ui_stopwatch_running() ? "Stoppuhr" : "pausiert")
+                                : (t->paused ? "pausiert" : (alarm ? "fertig" : icon_name(t->icon))));
     lv_obj_set_style_text_font(nl, &lv_font_montserrat_14, 0);
     lv_obj_set_style_text_color(nl, col_dim(), 0);
     lv_label_set_long_mode(nl, LV_LABEL_LONG_DOT);
@@ -115,10 +127,11 @@ void ui_overview_update() {
   uint32_t sig = signature();
   if (sig != s_sig) { s_sig = sig; rebuild(); }
 
-  for (int i = 0; i < s_n && i < active_count(); i++) {   // Restzeiten laufen weiter
-    ActiveTimer *t = active_at(i);
+  for (int i = 0; i < s_n; i++) {                        // Zeiten laufen weiter
     char buf[16];
-    fmt_time(buf, sizeof(buf), (timer_remaining_ms(t) + 999) / 1000);
+    if (s_ids[i] == 0) fmt_time(buf, sizeof(buf), ui_stopwatch_elapsed_ms() / 1000);
+    else if (i < active_count()) fmt_time(buf, sizeof(buf), (timer_remaining_ms(active_at(i)) + 999) / 1000);
+    else continue;
     if (strcmp(lv_label_get_text(s_time_lbl[i]), buf) != 0)
       lv_label_set_text(s_time_lbl[i], buf);
   }

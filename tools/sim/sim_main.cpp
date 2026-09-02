@@ -134,6 +134,18 @@ int main() {
   ui_stopwatch_update();
   scene("3d-stoppuhr");
 
+  // Stoppuhr laeuft mit: sie muss im Aktiv-Screen und in der Uebersicht auftauchen
+  ui_stopwatch_toggle();
+  usleep(300000);
+  ui_goto(TILE_ACTIVE);
+  ui_active_focus_stopwatch();
+  ui_active_update();
+  scene("2c-aktiv-stoppuhr");
+
+  ui_goto(TILE_OVERVIEW);
+  ui_overview_update();
+  scene("2d-uebersicht-mit-stoppuhr");
+
   ui_goto(TILE_PRESETS);
   ui_presets_update();
   scene("4-vorlagen");

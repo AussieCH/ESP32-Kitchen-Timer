@@ -34,7 +34,7 @@ static void paint(bool force) {
 
 static void fast_cb(lv_timer_t *) { paint(false); }
 
-static void run_cb(lv_event_t *) {
+void ui_stopwatch_toggle() {
   if (s_running) {
     s_carry_ms = elapsed_ms();
     s_running = false;
@@ -48,7 +48,7 @@ static void run_cb(lv_event_t *) {
   ui_stopwatch_update();
 }
 
-static void reset_cb(lv_event_t *) {
+void ui_stopwatch_reset() {
   s_running = false;
   s_carry_ms = 0;
   if (s_fast) lv_timer_pause(s_fast);
@@ -56,6 +56,9 @@ static void reset_cb(lv_event_t *) {
   paint(true);
   ui_stopwatch_update();
 }
+
+static void run_cb(lv_event_t *)   { ui_stopwatch_toggle(); }
+static void reset_cb(lv_event_t *) { ui_stopwatch_reset(); }
 
 void ui_stopwatch_create(lv_obj_t *p) {
   lv_obj_t *title = lv_label_create(p);
@@ -102,4 +105,5 @@ void ui_stopwatch_update() {
   paint(true);
 }
 
-bool ui_stopwatch_running() { return s_running; }
+bool ui_stopwatch_running() { return s_running || s_carry_ms > 0; }
+uint32_t ui_stopwatch_elapsed_ms() { return elapsed_ms(); }
