@@ -9,10 +9,12 @@
 #define LV_COLOR_16_SWAP        0      /* Byte-Swap macht LovyanGFX beim Push */
 
 #define LV_MEM_CUSTOM           0
-// 64 KB reichten bis fuenf Screens. Mit sieben Kacheln und den Masken des
+// 64 KB reichten bis fuenf Screens. Mit acht Kacheln und den Masken des
 // Alarm-Overlays schlaegt lv_mem_alloc fehl - und LVGLs Assert-Handler ist ein
 // while(1), das Geraet steht dann einfach. Im Simulator reproduzierbar.
-#define LV_MEM_SIZE             (128U * 1024U)
+// 96 KB statt 128: der BLE-Stack braucht rund 100 KB internen Speicher, und
+// der Spitzenverbrauch von LVGL liegt laut Simulator bei 64 KB.
+#define LV_MEM_SIZE             (96U * 1024U)
 
 #define LV_DISP_DEF_REFR_PERIOD 20
 #define LV_INDEV_DEF_READ_PERIOD 15

@@ -4,6 +4,7 @@
 #include "audio.h"
 #include "leds.h"
 #include "battery.h"
+#include "meater.h"
 
 void haptic_init() {}
 void haptic_click() {}
@@ -36,5 +37,13 @@ float battery_volts() { return 3.92f; }
 int   battery_percent() { return 71; }
 bool  battery_is_cell() { return true; }
 bool  battery_low() { return false; }
+
+void meater_init() {}
+MeaterState meater_state() { return MEATER_CONNECTED; }
+float meater_tip_c() { return 62.4f; }
+float meater_ambient_c() { return 178.0f; }
+int meater_battery() { return 84; }
+uint32_t meater_age_ms() { return 1200; }
+const char *meater_name() { return "MEATER+"; }
 
 void app_apply_brightness(int) {}

@@ -133,6 +133,10 @@ int main() {
   ui_egg_update();
   scene("3c-eieruhr");
 
+  ui_goto(TILE_MEATER);
+  ui_meater_update();
+  scene("3e-fuehler");
+
   ui_goto(TILE_STOPWATCH);
   ui_stopwatch_update();
   scene("3d-stoppuhr");

@@ -153,6 +153,7 @@ static void tile_changed_cb(lv_event_t *) {
     case TILE_ACTIVE:    ui_active_update();    break;
     case TILE_NEW:       ui_new_update();       break;
     case TILE_EGG:       ui_egg_update();       break;
+    case TILE_MEATER:    ui_meater_update();    break;
     case TILE_STOPWATCH: ui_stopwatch_update(); break;
     case TILE_PRESETS:   ui_presets_update();   break;
     case TILE_SETTINGS:  ui_settings_update();  break;
@@ -186,12 +187,13 @@ void ui_init() {
   ui_active_create(s_tiles[TILE_ACTIVE]);
   ui_new_create(s_tiles[TILE_NEW]);
   ui_egg_create(s_tiles[TILE_EGG]);
+  ui_meater_create(s_tiles[TILE_MEATER]);
   ui_stopwatch_create(s_tiles[TILE_STOPWATCH]);
   ui_presets_create(s_tiles[TILE_PRESETS]);
   ui_settings_create(s_tiles[TILE_SETTINGS]);
 
   lv_obj_t *dotbox = lv_obj_create(lv_layer_top());
-  lv_obj_set_size(dotbox, 120, 16);
+  lv_obj_set_size(dotbox, 130, 16);
   lv_obj_align(dotbox, LV_ALIGN_BOTTOM_MID, 0, -8);
   lv_obj_set_style_bg_opa(dotbox, LV_OPA_0, 0);
   lv_obj_set_style_border_width(dotbox, 0, 0);
@@ -247,6 +249,7 @@ void ui_tick() {
     case TILE_ACTIVE:    ui_active_update();    break;
     case TILE_NEW:       ui_new_update();       break;
     case TILE_EGG:       ui_egg_update();       break;
+    case TILE_MEATER:    ui_meater_update();    break;
     case TILE_STOPWATCH: ui_stopwatch_update(); break;
     case TILE_PRESETS:   ui_presets_update();   break;
     case TILE_SETTINGS:  ui_settings_update();  break;

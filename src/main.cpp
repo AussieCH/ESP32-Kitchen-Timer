@@ -10,6 +10,7 @@
 #include "audio.h"
 #include "leds.h"
 #include "battery.h"
+#include "meater.h"
 #include "timers.h"
 #include "ui.h"
 
@@ -114,6 +115,7 @@ void setup() {
   audio_init();
   leds_init();
   battery_init();
+  meater_init();          // Bluetooth-Suche nach dem Fleischfuehler
   timers_init();    // liest Vorlagen + Lautstaerke/Helligkeit aus dem NVS
 
   static lv_indev_drv_t indev_drv;
