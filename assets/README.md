@@ -2,7 +2,7 @@
 
 ## Icons
 
-**Geliefert und eingebaut.** 33 Stueck, weisse Strichzeichnung auf schwarz, in
+**33 Stück**, weiße Strichzeichnung auf schwarz, in
 `assets/icons/` als `<ID>_<Name>.png` (Originale, 1254x1254). Der Dateiname ist
 die Quelle fuer Reihenfolge **und** Anzeigenamen.
 
@@ -34,7 +34,25 @@ lassen, `ICON_COUNT` in `src/icons.h` anpassen.
 
 ## Melodien
 
-**Entfallen.** Das Board hat keinen Lautsprecher (der DAC gibt nur auf die
-3.5-mm-Klinke aus), deshalb ist der Alarm optisch und haptisch. Die gelieferten
-Notentabellen liegen nicht mehr im Projekt - falls der Ton je zurueckkommen
-soll, waeren `Toene.txt` und `tools/u4wdh_xsmt/` der Ausgangspunkt.
+20 Stück in `src/melodies.cpp` als `{Frequenz, Dauer}`-Tabellen (Format aus
+`Toene.txt`). Hörbar nur auf Boards mit Lautsprecher — beim **Guition
+JC3636K718C** also ja, beim **Waveshare Knob** nein (dessen DAC gibt nur auf die
+3.5-mm-Klinke aus, dort ist der Alarm optisch und haptisch).
+
+```c
+static const Note m21[] = { {C5,250}, {E5,250}, {REST,200}, {G5,400} };
+...
+M("Kurzname", m21),
+```
+
+* `REST` = Pause, Dauer in Millisekunden, Frequenz in Hz.
+* Der Kurzname sollte **max. ~13 Zeichen** haben, sonst kürzt der Button ihn ab.
+* **Keine Umlaute** - der eingebaute LVGL-Font hat sie nicht (deshalb
+  "Haenschen", "Tuergong").
+* Beim Auswählen wird sofort angespielt; wichtiger als die Anzahl ist, dass die
+  ersten zwei Sekunden unterscheidbar sind.
+
+Der Ton wird als Sinus mit etwas dritter Harmonischer synthetisiert (trägt
+besser durch Küchenlärm) und an den Notengrenzen weich ein-/ausgeblendet. Beim
+Alarm läuft die Melodie in Schleife mit 700 ms Pause und fährt über 8 s von
+25 % auf volle Lautstärke hoch.
