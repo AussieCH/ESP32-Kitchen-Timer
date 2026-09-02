@@ -21,7 +21,7 @@ static void menu_close() { if (s_menu) { lv_obj_del(s_menu); s_menu = nullptr; }
 static void start_preset(int idx) {
   Preset *p = preset_at(idx);
   if (!p) return;
-  int a = timer_start(p->total_s, p->icon);
+  int a = timer_start(p->total_s, p->icon, p->melody);
   if (a < 0) { ui_toast("Zu viele Timer"); return; }
   ActiveTimer *t = active_at(a);
   if (t) ui_active_focus_id(t->id);
@@ -36,7 +36,7 @@ static void menu_edit_cb(lv_event_t *)   {
   int i = s_menu_idx; menu_close();
   Preset *p = preset_at(i);
   if (!p) return;
-  ui_new_load(p->total_s, p->icon, i);
+  ui_new_load(p->total_s, p->icon, p->melody, i);
   ui_goto(TILE_NEW);
 }
 static void menu_del_yes(void *u) {
@@ -109,7 +109,7 @@ static uint32_t signature() {
   uint32_t s = preset_count() * 2654435761u;
   for (int i = 0; i < preset_count(); i++) {
     Preset *p = preset_at(i);
-    s ^= (p->total_s * 31u + p->icon * 7u) * (uint32_t)(i + 1);
+    s ^= (p->total_s * 31u + p->icon * 7u + p->melody) * (uint32_t)(i + 1);
   }
   return s;
 }

@@ -1,11 +1,14 @@
 // Kuechentimer fuer den Waveshare ESP32-S3-Knob-Touch-LCD-1.8 (autark, kein WLAN).
 #include <Arduino.h>
+#include <Wire.h>
 #include <lvgl.h>
 #include "lgfx_knob.h"
 #include "board_pins.h"
 #include "input_touch.h"
 #include "input_knob.h"
 #include "haptics.h"
+#include "audio.h"
+#include "leds.h"
 #include "timers.h"
 #include "ui.h"
 
@@ -72,7 +75,7 @@ void setup() {
   // still und das Geraet wirkt eingefroren. Timeout 0 = lieber verwerfen.
   Serial.setTxTimeoutMs(0);
   delay(200);
-  Serial.println("\n[boot] Kuechentimer");
+  Serial.printf("\n[boot] Kuechentimer auf %s\n", BOARD_NAME);
 
   lcd.init();
   lcd.setRotation(0);
@@ -94,8 +97,21 @@ void setup() {
   lv_disp_drv_register(&disp_drv);
 
   touch_init();     // startet den I2C-Bus, muss vor haptic_init laufen
+
+  // Wer haengt am I2C-Bus? Beantwortet unter anderem, ob dieses Board wirklich
+  // einen Haptiktreiber hat - Datenblaetter und Herstellerdemos widersprechen sich.
+  Serial.print("[i2c] gefunden:");
+  int found = 0;
+  for (uint8_t a = 1; a < 127; a++) {
+    Wire.beginTransmission(a);
+    if (Wire.endTransmission() == 0) { Serial.printf(" 0x%02X", a); found++; }
+  }
+  Serial.println(found ? "" : " nichts");
+
   haptic_init();
   knob_init();
+  audio_init();
+  leds_init();
   timers_init();    // liest Vorlagen + Lautstaerke/Helligkeit aus dem NVS
 
   static lv_indev_drv_t indev_drv;
@@ -159,6 +175,23 @@ void loop() {
 #ifdef DIAG_MODE
   knob_dump_trace();             // Flankenprotokoll, solange die Diagnose an ist
 #endif
+
+  // LED-Ring zeigt die Restzeit des naechsten Timers - auch bei dunklem Display
+  // sieht man so, dass etwas laeuft. Im Alarm gehoert der Ring dem Blinktakt.
+  static uint32_t t_ring = 0;
+  if (leds_present() && now - t_ring >= 250) {
+    t_ring = now;
+    if (timer_first_ringing() < 0) {
+      ActiveTimer *t = active_at(0);
+      if (t && !t->expired) {
+        uint32_t total = t->total_s * 1000UL;
+        float frac = total ? (float)timer_remaining_ms(t) / total : 0.0f;
+        leds_progress(lv_color_to32(timer_color(t->color)) & 0xFFFFFF, frac);
+      } else {
+        leds_off();
+      }
+    }
+  }
 
   if (s_awake && now - s_last_input_ms > IDLE_MS && timer_first_ringing() < 0) doze();
 

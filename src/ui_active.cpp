@@ -4,12 +4,15 @@
 // auf einem runden Panel sonst brachliegt). Hoch/runter wischen oder Drehring
 // wechselt zwischen den laufenden Timern.
 //
-// Alarm: dieser Screen kommt nach vorn, die Anzeige blinkt in der Timer-Farbe
-// und die Haptik schnarrt im selben Takt. Ton gibt es bewusst nicht - das Board
-// hat keinen Lautsprecher, der PCM5100A gibt nur auf die Klinke aus.
+// Alarm: dieser Screen kommt nach vorn und die Anzeige blinkt in der Timer-
+// Farbe. Was das Board sonst noch kann, laeuft im selben Takt mit - Haptik,
+// LED-Ring, und auf Boards mit Lautsprecher die gewaehlte Melodie in Schleife.
 #include <Arduino.h>
 #include "ui.h"
 #include "haptics.h"
+#include "audio.h"
+#include "leds.h"
+#include "melodies.h"
 
 static lv_obj_t *s_arc, *s_idx, *s_icon, *s_time, *s_sub;
 static lv_obj_t *s_btn_pause, *s_btn_plus, *s_btn_del;
@@ -43,6 +46,8 @@ static bool sel_alarming() {
 // ---------------------------------------------------------------- Blinken
 static void flash_stop() {
   haptic_buzz(false);
+  audio_stop();
+  leds_off();
   s_flash_on = false;
   lv_obj_set_style_bg_opa(s_flash, LV_OPA_0, 0);
   if (s_flash_timer) lv_timer_pause(s_flash_timer);
@@ -52,18 +57,25 @@ static void flash_cb(lv_timer_t *) {
   int idx = timer_first_ringing();
   if (idx < 0) { flash_stop(); return; }
 
+  lv_color_t c = timer_color(active_at(idx)->color);
   s_flash_on = !s_flash_on;
-  lv_obj_set_style_bg_color(s_flash, timer_color(active_at(idx)->color), 0);
+  lv_obj_set_style_bg_color(s_flash, c, 0);
   lv_obj_set_style_bg_opa(s_flash, s_flash_on ? LV_OPA_40 : LV_OPA_0, 0);
   haptic_buzz(s_flash_on);
+  leds_alarm_phase(lv_color_to32(c) & 0xFFFFFF, s_flash_on);
 }
 
 void ui_alarm_check() {
   int idx = timer_first_ringing();
   if (idx < 0) { flash_stop(); return; }
 
-  s_sel_id = active_at(idx)->id;          // der Alarm bestimmt, was man sieht
+  ActiveTimer *t = active_at(idx);
+  s_sel_id = t->id;                       // der Alarm bestimmt, was man sieht
   s_paint_sig = 0xFFFFFFFF;
+  if (!audio_is_playing()) {
+    audio_set_fade_in(true);              // nicht sofort mit voller Lautstaerke
+    audio_play(&MELODIES[t->melody % MELODY_COUNT], true);
+  }
   ui_goto(TILE_ACTIVE);
   ui_active_update();
   if (!s_flash_timer) s_flash_timer = lv_timer_create(flash_cb, FLASH_MS, nullptr);

@@ -2,6 +2,7 @@
 #include <Preferences.h>
 #include <esp_timer.h>
 #include "timers.h"
+#include "audio.h"
 
 static ActiveTimer s_act[MAX_ACTIVE];
 static ActiveTimer *s_sorted[MAX_ACTIVE];
@@ -25,6 +26,7 @@ static void presets_save() {
 
 void settings_save() {
   s_prefs.putInt("bright", s_brightness);
+  s_prefs.putInt("vol", audio_get_volume());
 }
 
 void timers_init() {
@@ -36,20 +38,21 @@ void timers_init() {
   if (s_preset_n) s_prefs.getBytes("presets", s_presets, sizeof(Preset) * s_preset_n);
 
   s_brightness = constrain(s_prefs.getInt("bright", 80), 10, 100);
+  audio_set_volume(s_prefs.getInt("vol", 70));
 
   // Icon-IDs stecken in den Vorlagen: aendert sich der Icon-Satz, sind gespeicherte
   // Vorlagen wertlos - deshalb eine Version im NVS.
-  const int PRESET_VERSION = 4;
+  const int PRESET_VERSION = 5;
   if (s_prefs.getInt("pver", 0) != PRESET_VERSION) {
     s_preset_n = 0;
     s_prefs.putInt("pver", PRESET_VERSION);
   }
 
   if (s_preset_n == 0) {              // Erststart: ein paar sinnvolle Vorlagen
-    preset_remember( 8 * 60,  0);   // Pasta
-    preset_remember(20 * 60,  4);   // Kartoffeln
-    preset_remember( 5 * 60,  1);   // Ei
-    preset_remember( 3 * 60, 29);   // Wasserkessel
+    preset_remember( 8 * 60,  0, 9);   // Pasta
+    preset_remember(20 * 60,  4, 4);   // Kartoffeln
+    preset_remember( 5 * 60,  1, 0);   // Ei
+    preset_remember( 3 * 60, 29, 18);  // Wasserkessel
   }
 }
 
@@ -90,7 +93,7 @@ static void resort() {
 int active_count() { return s_sorted_n; }
 ActiveTimer *active_at(int idx) { return (idx >= 0 && idx < s_sorted_n) ? s_sorted[idx] : nullptr; }
 
-int timer_start(uint32_t total_s, uint8_t icon) {
+int timer_start(uint32_t total_s, uint8_t icon, uint8_t melody) {
   if (total_s == 0) return -1;
   for (int i = 0; i < MAX_ACTIVE; i++) {
     if (s_act[i].used) continue;
@@ -100,7 +103,7 @@ int timer_start(uint32_t total_s, uint8_t icon) {
     t->id = s_next_id++;
     t->total_s = total_s;
     t->end_ms = now_ms() + (int64_t)total_s * 1000;
-    t->icon = icon;
+    t->icon = icon; t->melody = melody;
     t->color = s_next_color++ % 8;
     resort();
     for (int k = 0; k < s_sorted_n; k++) if (s_sorted[k] == t) return k;
@@ -193,9 +196,10 @@ int ringing_count() {
 int preset_count() { return s_preset_n; }
 Preset *preset_at(int idx) { return (idx >= 0 && idx < s_preset_n) ? &s_presets[idx] : nullptr; }
 
-void preset_remember(uint32_t total_s, uint8_t icon) {
+void preset_remember(uint32_t total_s, uint8_t icon, uint8_t melody) {
   for (int i = 0; i < s_preset_n; i++) {          // schon vorhanden? nur nach oben schieben
     if (s_presets[i].total_s == total_s && s_presets[i].icon == icon) {
+      s_presets[i].melody = melody;
       Preset p = s_presets[i];
       for (int j = i; j > 0; j--) s_presets[j] = s_presets[j - 1];
       s_presets[0] = p;
@@ -205,13 +209,13 @@ void preset_remember(uint32_t total_s, uint8_t icon) {
   }
   if (s_preset_n < MAX_PRESETS) s_preset_n++;     // sonst faellt die aelteste raus
   for (int j = s_preset_n - 1; j > 0; j--) s_presets[j] = s_presets[j - 1];
-  s_presets[0] = { total_s, icon };
+  s_presets[0] = { total_s, icon, melody };
   presets_save();
 }
 
-void preset_replace(int idx, uint32_t total_s, uint8_t icon) {
+void preset_replace(int idx, uint32_t total_s, uint8_t icon, uint8_t melody) {
   if (idx < 0 || idx >= s_preset_n) return;
-  s_presets[idx] = { total_s, icon };
+  s_presets[idx] = { total_s, icon, melody };
   presets_save();
 }
 

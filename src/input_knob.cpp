@@ -21,6 +21,9 @@
 #include "board_pins.h"
 #include "input_knob.h"
 
+#if KNOB_QUADRATURE
+// ============================ Waveshare-Knob: echte Quadratur =================
+
 #define DEBOUNCE_US 12000
 #define REVERSAL_MS 80                    // Gegenschritt kurz nach einer Drehung =
                                           // Nachprellen beim Einrasten, kein Wechsel                  // Sperrzeit nach einer Rastung (Menschen
@@ -128,3 +131,66 @@ int knob_accel_step() {
   if (s_fast_run >= 6)  return 5;
   return 1;
 }
+
+#else
+// ============================ Guition K718: KEINE Quadratur ===================
+// Der Knopf liefert pro Rastung genau einen sauberen LOW-Impuls, und zwar auf
+// unterschiedlichen Leitungen je Drehrichtung: links auf KNOB_PIN_LEFT, rechts
+// auf KNOB_PIN_RIGHT. Ein Quadraturdekoder (auch der PCNT im Chip) liest hier
+// schlicht null. Also zwei Interrupts auf fallende Flanke, fertig.
+
+#define PULSE_DEBOUNCE_US 4000
+
+static volatile int32_t s_detents = 0;
+static volatile int32_t s_edges = 0;
+static volatile int64_t s_last_step_us = 0;
+static volatile int64_t s_prev_step_us = 0;
+static volatile uint8_t s_fast_run = 0;
+static int32_t s_consumed = 0;
+
+static void IRAM_ATTR count(int dir) {
+  int64_t now = esp_timer_get_time();
+  s_edges++;
+  if (now - s_last_step_us < PULSE_DEBOUNCE_US) return;   // Prellen
+  s_last_step_us = now;
+
+  s_detents += dir;
+  uint32_t gap_ms = (uint32_t)((now - s_prev_step_us) / 1000);
+  s_prev_step_us = now;
+  if (gap_ms < 70) { if (s_fast_run < 40) s_fast_run++; } else s_fast_run = 0;
+}
+
+static void IRAM_ATTR isr_left()  { count(-1); }
+static void IRAM_ATTR isr_right() { count(+1); }
+
+void knob_init() {
+  pinMode(KNOB_PIN_LEFT,  INPUT_PULLUP);
+  pinMode(KNOB_PIN_RIGHT, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(KNOB_PIN_LEFT),  isr_left,  FALLING);
+  attachInterrupt(digitalPinToInterrupt(KNOB_PIN_RIGHT), isr_right, FALLING);
+  Serial.println("[knob] Impulsgeber bereit (links GPIO" + String(KNOB_PIN_LEFT)
+                 + ", rechts GPIO" + String(KNOB_PIN_RIGHT) + ")");
+}
+
+int knob_take_delta() {
+  int32_t d = s_detents - s_consumed;
+  if (d == 0) return 0;
+  s_consumed += d;
+#if KNOB_INVERT
+  d = -d;
+#endif
+  return (int)d;
+}
+
+int32_t knob_raw()     { return s_edges; }
+int32_t knob_detents() { return s_detents; }
+int knob_pin_state()   { return (digitalRead(KNOB_PIN_LEFT) << 1) | digitalRead(KNOB_PIN_RIGHT); }
+void knob_dump_trace() {}
+
+int knob_accel_step() {
+  if (s_fast_run >= 14) return 10;
+  if (s_fast_run >= 6)  return 5;
+  return 1;
+}
+
+#endif  // KNOB_QUADRATURE

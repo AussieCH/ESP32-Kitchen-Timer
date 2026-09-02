@@ -24,8 +24,9 @@ static void settle(int ms) {
 }
 
 static void shot(const char *name) {
+  const char *prefix = getenv("SIM_PREFIX");
   char path[256];
-  snprintf(path, sizeof(path), "tools/sim/out/%s.ppm", name);
+  snprintf(path, sizeof(path), "tools/sim/out/%s%s.ppm", prefix ? prefix : "", name);
   FILE *f = fopen(path, "wb");
   fprintf(f, "P6\n%d %d\n255\n", SCR_W, SCR_H);
   for (int i = 0; i < SCR_W * SCR_H; i++) {
@@ -92,9 +93,9 @@ int main() {
 
   scene("1-aktiv-leer");
 
-  timer_start(20 * 60, 1);          // Pasta 20:00
-  timer_start(3 * 60 + 30, 0);      // Ei 3:30
-  timer_start(75 * 60, 16);         // Backofen 1:15:00
+  timer_start(20 * 60, 2, 0);          // Pasta 20:00
+  timer_start(3 * 60 + 30, 1, 9);      // Ei 3:30
+  timer_start(75 * 60, 17, 4);         // Backofen 1:15:00
   timer_toggle_pause(2);
   ui_active_update();
   scene("2-aktiv-drei");
@@ -104,7 +105,7 @@ int main() {
   scene("2b-uebersicht");
 
   ui_goto(TILE_NEW);
-  ui_new_load(0, 9, -1);
+  ui_new_load(0, 9, 16, -1);
   scene("3-neuer-timer");
 
   // Drehring-Kette pruefen: ui_on_knob -> Tile-Routing -> ui_new_knob -> Anzeige
@@ -127,7 +128,7 @@ int main() {
   scene("5-einstellungen");
 
   ui_goto(TILE_ACTIVE);
-  timer_start(1, 19);                  // laeuft gleich ab -> Alarm
+  timer_start(1, 20, 3);                  // laeuft gleich ab -> Alarm
   usleep(1200000);
   timers_tick();
   ui_alarm_check();

@@ -50,7 +50,7 @@ void ui_active_knob(int d, int step); void ui_active_gesture(lv_dir_t dir);
 
 void ui_new_create(lv_obj_t *p);      void ui_new_update();
 void ui_new_knob(int d, int step);
-void ui_new_load(uint32_t total_s, uint8_t icon, int edit_preset_idx);
+void ui_new_load(uint32_t total_s, uint8_t icon, uint8_t melody, int edit_preset_idx);
 
 void ui_presets_create(lv_obj_t *p);  void ui_presets_update();
 void ui_presets_knob(int d, int step);

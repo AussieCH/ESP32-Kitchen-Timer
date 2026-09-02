@@ -16,12 +16,12 @@ struct ActiveTimer {
   bool     ringing;       // klingelt gerade
   bool     expired;       // abgelaufen, Ton beendet, noch nicht quittiert
   int64_t  ring_start_ms;
-  uint8_t  icon, color;
+  uint8_t  icon, melody, color;
 };
 
 struct Preset {
   uint32_t total_s;
-  uint8_t  icon;
+  uint8_t  icon, melody;      // melody nur auf Boards mit Lautsprecher benutzt
 };
 
 void timers_init();
@@ -30,7 +30,7 @@ int64_t now_ms();
 // --- laufende Timer ---------------------------------------------------------
 int   active_count();
 ActiveTimer *active_at(int idx);              // idx 0..active_count()-1, nach Restzeit sortiert
-int   timer_start(uint32_t total_s, uint8_t icon);
+int   timer_start(uint32_t total_s, uint8_t icon, uint8_t melody);
 void  timer_toggle_pause(int idx);
 void  timer_add_seconds(int idx, int32_t secs);
 void  timer_delete(int idx);
@@ -46,11 +46,11 @@ void  timer_snooze(int idx, uint32_t secs);   // "+5 Min" aus dem Alarm heraus
 // --- Vorlagen ---------------------------------------------------------------
 int   preset_count();
 Preset *preset_at(int idx);
-void  preset_remember(uint32_t total_s, uint8_t icon);   // legt an oder schiebt nach oben
-void  preset_replace(int idx, uint32_t total_s, uint8_t icon);
+void  preset_remember(uint32_t total_s, uint8_t icon, uint8_t melody);  // legt an oder schiebt nach oben
+void  preset_replace(int idx, uint32_t total_s, uint8_t icon, uint8_t melody);
 void  preset_delete(int idx);
 
 // --- Einstellungen ----------------------------------------------------------
 int   setting_brightness();       // 10..100
 void  setting_set_brightness(int v);
-void  settings_save();            // Helligkeit (entprellt aufrufen)
+void  settings_save();            // Helligkeit + Lautstaerke (entprellt aufrufen)
