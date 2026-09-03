@@ -142,9 +142,13 @@ und dann sieht man das in zwei Minuten statt es zu raten.
 
 **Preis in Speicher:** NimBLE nimmt sich rund **100 KB internen RAM**. Danach
 waren nur noch 22 KB frei — zu wenig, das wäre früher oder später abgestürzt.
-Deshalb: LVGL-Pool von 128 auf 96 KB und NimBLE auf eine Verbindung und die
-reine Empfängerrolle zusammengestrichen (siehe `build_flags`). Jetzt sind
-wieder rund 55 KB frei.
+Deshalb läuft der LVGL-Pool jetzt mit 96 statt 128 KB (Spitzenverbrauch laut
+Simulator: 64 KB); damit sind wieder rund 55 KB frei.
+
+NimBLE selbst läuft dabei in der **Standardkonfiguration**, also mit bis zu drei
+gleichzeitigen Verbindungen — die gemessenen 55 KB gelten für diesen Zustand.
+Für mehrere Fühler (MEATER Duo, Block) ist der Stack damit bereits gerüstet;
+begrenzt ist nur die Anwendung, die heute genau einen Fühler führt.
 
 ### Weitere Festlegungen
 
