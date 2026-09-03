@@ -6,3 +6,6 @@ tools/sim/obj/
 tools/sim/sim
 tools/sim/out/
 tools/.fonts/
+src/secrets.h
+.DS_Store
+"1.8inch_SPI_Module_ST7735S 2"/
