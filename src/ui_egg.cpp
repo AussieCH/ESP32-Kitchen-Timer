@@ -18,12 +18,14 @@
 
 #define ROWS 3
 static const char *LBL[ROWS]  = { "Groesse", "Start", "Ergebnis" };
-static const char *SIZE_T[4]  = { "S  48 g", "M  58 g", "L  68 g", "XL 78 g" };
+// Schweizer Verkaufsgroessen - so steht es auf der Eierschachtel, danach waehlt
+// man im Laden. Gerechnet wird mit der Mitte des jeweiligen Bereichs (MASS).
+static const char *SIZE_T[4]  = { "S  < 53 g", "M  53-63 g", "L  63-73 g", "XL  > 73 g" };
 static const char *START_T[2] = { "Kuehlschrank", "Zimmer" };
 static const char *DONE_T[3]  = { "weich", "wachsweich", "hart" };
 static const int   COUNT[ROWS] = { 4, 2, 3 };
 
-static const float MASS[4]  = { 48.0f, 58.0f, 68.0f, 78.0f };
+static const float MASS[4]  = { 48.0f, 58.0f, 68.0f, 78.0f };   // Mitten der Klassen
 static const float T_EGG[2] = { 4.0f, 20.0f };
 static const float T_YOLK[3] = { 63.0f, 70.0f, 80.0f };
 
