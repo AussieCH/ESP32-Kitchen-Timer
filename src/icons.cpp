@@ -5,6 +5,7 @@
 // Neu erzeugen: python3 tools/convert_icons.py assets/icons
 // Reihenfolge = Icon-ID und steckt in gespeicherten Vorlagen -> nicht umsortieren.
 #include "icons.h"
+#include "gen/font_ui.h"
 #include "gen/icons_data.h"
 
 struct IconDef { const char *name; const char *abbrev; };
@@ -12,7 +13,7 @@ struct IconDef { const char *name; const char *abbrev; };
 static const IconDef ICONS[ICON_COUNT] = {
   { "Pasta", "PA" },  { "Ei", "EI" },
   { "Hefezopf", "HE" },  { "Reis", "RE" },
-  { "Kartoffeln", "KA" },  { "Gemuese", "GE" },
+  { "Kartoffeln", "KA" },  { "Gemüse", "GE" },
   { "Brokkoli", "BR" },  { "Spargel", "SP" },
   { "Suppe", "SU" },  { "Kochtopf", "KO" },
   { "Kochen", "KO" },  { "Braten", "BR" },
@@ -20,7 +21,7 @@ static const IconDef ICONS[ICON_COUNT] = {
   { "Gehen lassen", "GL" },  { "Brot", "BR" },
   { "Kuchen", "KU" },  { "Kekse", "KE" },
   { "Eintopf", "EI" },  { "Steak", "ST" },
-  { "Filet", "FI" },  { "Haehnchen", "HA" },
+  { "Filet", "FI" },  { "Hähnchen", "HA" },
   { "Kotelett", "KO" },  { "Schnitzel", "SC" },
   { "Fisch", "FI" },  { "Garnelen", "GA" },
   { "Eieruhr", "EI" },  { "Wecker", "WE" },
@@ -50,9 +51,9 @@ lv_obj_t *icon_create(lv_obj_t *parent, int size) {
 
   lv_obj_t *lbl = lv_label_create(box);
   lv_obj_center(lbl);
-  lv_obj_set_style_text_font(lbl, size >= 70 ? &lv_font_montserrat_28
-                                  : size >= 44 ? &lv_font_montserrat_20
-                                               : &lv_font_montserrat_14, 0);  // nur Platzhalter
+  lv_obj_set_style_text_font(lbl, size >= 70 ? &font_ui_28
+                                  : size >= 44 ? &font_ui_20
+                                               : &font_ui_14, 0);  // nur Platzhalter
   lv_label_set_text(lbl, "");
   return box;
 }

@@ -30,12 +30,17 @@
 #define LV_USE_MEM_MONITOR      0
 #define LV_USE_LOG              0
 
-#define LV_FONT_MONTSERRAT_14   1
-#define LV_FONT_MONTSERRAT_16   1
-#define LV_FONT_MONTSERRAT_20   1
-#define LV_FONT_MONTSERRAT_24   1
-#define LV_FONT_MONTSERRAT_28   1
-#define LV_FONT_DEFAULT         &lv_font_montserrat_16
+// Eigene Oberflaechenschrift statt der eingebauten: Montserrat enthaelt nur
+// ASCII (0x20-0x7F), ein "ü" ist dort nicht vorhanden. font_ui_* ist Rubik mit
+// Umlauten plus denselben Symbolen - erzeugt von tools/make_ui_fonts.py.
+// Die eingebauten Schriften bleiben aus, sonst laegen beide im Flash.
+#define LV_FONT_MONTSERRAT_14   0
+#define LV_FONT_MONTSERRAT_16   0
+#define LV_FONT_MONTSERRAT_20   0
+#define LV_FONT_MONTSERRAT_24   0
+#define LV_FONT_MONTSERRAT_28   0
+#define LV_FONT_CUSTOM_DECLARE  LV_FONT_DECLARE(font_ui_16);
+#define LV_FONT_DEFAULT         &font_ui_16
 
 #define LV_USE_THEME_DEFAULT    1
 #define LV_THEME_DEFAULT_DARK   1

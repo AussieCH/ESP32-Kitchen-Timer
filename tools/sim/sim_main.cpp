@@ -6,6 +6,7 @@
 #include "ui.h"
 #include "timers.h"
 #include "meater.h"
+#include "alarm.h"
 
 static lv_color_t fb[SCR_W * SCR_H];
 static int violations = 0;
@@ -163,6 +164,9 @@ int main() {
   setting_set_meater_armed(true);        // scharf: Zieltemperatur im Bild
   ui_meater_update();
   scene("3f-fuehler-ziel");
+  alarm_stop();                          // sonst liegt das Blinken ueber allen
+  setting_set_meater_armed(false);       // folgenden Aufnahmen
+  ui_meater_update();
 
   ui_goto(TILE_STOPWATCH);
   ui_stopwatch_update();

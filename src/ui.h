@@ -18,6 +18,8 @@
 #define TILE_SETTINGS  7
 #define TILE_COUNT     8
 
+#include "gen/font_ui.h"
+
 LV_FONT_DECLARE(font_time_92);
 LV_FONT_DECLARE(font_time_52);
 LV_FONT_DECLARE(font_time_30);

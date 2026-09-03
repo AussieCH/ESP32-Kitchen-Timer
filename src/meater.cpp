@@ -151,7 +151,7 @@ void meater_init() {
   NimBLEDevice::setPower(ESP_PWR_LVL_P9);
   s_state = MEATER_SEARCHING;
   xTaskCreatePinnedToCore(meater_task, "meater", 5120, nullptr, 1, nullptr, 0);
-  Serial.println("[meater] Suche laeuft");
+  Serial.println("[meater] Suche läuft");
 }
 
 MeaterState meater_state()  { return s_state; }

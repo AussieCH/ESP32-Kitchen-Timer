@@ -51,7 +51,7 @@ lv_obj_t *make_button(lv_obj_t *parent, const char *txt, lv_coord_t w, lv_coord_
 
   lv_obj_t *l = lv_label_create(b);
   lv_label_set_text(l, txt);
-  lv_obj_set_style_text_font(l, &lv_font_montserrat_16, 0);
+  lv_obj_set_style_text_font(l, &font_ui_16, 0);
   lv_label_set_long_mode(l, LV_LABEL_LONG_DOT);
   lv_obj_set_width(l, w - 12);
   lv_obj_set_style_text_align(l, LV_TEXT_ALIGN_CENTER, 0);
@@ -122,7 +122,7 @@ void ui_confirm(const char *question, ui_yes_cb_t yes_cb, void *user) {
 
   lv_obj_t *l = lv_label_create(s_confirm);
   lv_label_set_text(l, question);
-  lv_obj_set_style_text_font(l, &lv_font_montserrat_20, 0);
+  lv_obj_set_style_text_font(l, &font_ui_20, 0);
   lv_obj_set_style_text_align(l, LV_TEXT_ALIGN_CENTER, 0);
   lv_obj_set_width(l, 240);
   lv_obj_align(l, LV_ALIGN_CENTER, 0, -40);
@@ -220,7 +220,7 @@ void ui_init() {
 void ui_debug_set(const char *txt) {
   if (!s_debug) {
     s_debug = lv_label_create(lv_layer_top());
-    lv_obj_set_style_text_font(s_debug, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_font(s_debug, &font_ui_14, 0);
     lv_obj_set_style_text_color(s_debug, lv_palette_main(LV_PALETTE_GREEN), 0);
     lv_obj_set_style_bg_color(s_debug, lv_color_black(), 0);
     lv_obj_set_style_bg_opa(s_debug, LV_OPA_70, 0);

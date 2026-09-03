@@ -63,7 +63,7 @@ static void reset_cb(lv_event_t *) { ui_stopwatch_reset(); }
 void ui_stopwatch_create(lv_obj_t *p) {
   lv_obj_t *title = lv_label_create(p);
   lv_label_set_text(title, "Stoppuhr");
-  lv_obj_set_style_text_font(title, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(title, &font_ui_14, 0);
   lv_obj_set_style_text_color(title, col_dim(), 0);
   lv_obj_align(title, LV_ALIGN_CENTER, 0, -150);
 
@@ -79,11 +79,11 @@ void ui_stopwatch_create(lv_obj_t *p) {
   s_btn_run = make_button(p, LV_SYMBOL_PLAY " Start", 112, 54, run_cb, nullptr);
   lv_obj_align(s_btn_run, LV_ALIGN_CENTER, -60, 99);
 
-  s_btn_reset = make_button(p, "Zurueck", 112, 54, reset_cb, nullptr);
+  s_btn_reset = make_button(p, "Zurück", 112, 54, reset_cb, nullptr);
   lv_obj_align(s_btn_reset, LV_ALIGN_CENTER, 60, 99);
 
   s_hint = lv_label_create(p);
-  lv_obj_set_style_text_font(s_hint, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(s_hint, &font_ui_14, 0);
   lv_obj_set_style_text_color(s_hint, col_dim(), 0);
   lv_obj_align(s_hint, LV_ALIGN_CENTER, 0, 140);
 
@@ -101,7 +101,7 @@ void ui_stopwatch_update() {
   }
   if (s_running || elapsed_ms()) lv_obj_clear_state(s_btn_reset, LV_STATE_DISABLED);
   else                           lv_obj_add_state(s_btn_reset, LV_STATE_DISABLED);
-  lv_label_set_text(s_hint, s_running ? "laeuft im Hintergrund weiter" : "");
+  lv_label_set_text(s_hint, s_running ? "läuft im Hintergrund weiter" : "");
   paint(true);
 }
 

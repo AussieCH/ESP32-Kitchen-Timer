@@ -82,7 +82,7 @@ static void rebuild() {
     lv_obj_t *nl = lv_label_create(row);
     lv_label_set_text(nl, is_sw ? (ui_stopwatch_running() ? "Stoppuhr" : "pausiert")
                                 : (t->paused ? "pausiert" : (alarm ? "fertig" : icon_name(t->icon))));
-    lv_obj_set_style_text_font(nl, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_font(nl, &font_ui_14, 0);
     lv_obj_set_style_text_color(nl, col_dim(), 0);
     lv_label_set_long_mode(nl, LV_LABEL_LONG_DOT);
     lv_obj_set_width(nl, 92);
@@ -99,8 +99,8 @@ static void rebuild() {
 
 void ui_overview_create(lv_obj_t *p) {
   lv_obj_t *title = lv_label_create(p);
-  lv_label_set_text(title, "Laeuft gerade");
-  lv_obj_set_style_text_font(title, &lv_font_montserrat_14, 0);
+  lv_label_set_text(title, "Läuft gerade");
+  lv_obj_set_style_text_font(title, &font_ui_14, 0);
   lv_obj_set_style_text_color(title, col_dim(), 0);
   lv_obj_align(title, LV_ALIGN_CENTER, 0, -150);
 
@@ -117,8 +117,8 @@ void ui_overview_create(lv_obj_t *p) {
   lv_obj_set_scrollbar_mode(s_list, LV_SCROLLBAR_MODE_OFF);
 
   s_empty = lv_label_create(p);
-  lv_label_set_text(s_empty, "Kein Timer laeuft");
-  lv_obj_set_style_text_font(s_empty, &lv_font_montserrat_20, 0);
+  lv_label_set_text(s_empty, "Kein Timer läuft");
+  lv_obj_set_style_text_font(s_empty, &font_ui_20, 0);
   lv_obj_set_style_text_color(s_empty, col_dim(), 0);
   lv_obj_align(s_empty, LV_ALIGN_CENTER, 0, 0);
 }

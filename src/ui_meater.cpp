@@ -48,7 +48,7 @@ static void arm_cb(lv_event_t *) {
 void ui_meater_create(lv_obj_t *p) {
   lv_obj_t *title = lv_label_create(p);
   lv_label_set_text(title, "Grill-Thermometer");
-  lv_obj_set_style_text_font(title, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(title, &font_ui_14, 0);
   lv_obj_set_style_text_color(title, col_dim(), 0);
   lv_obj_align(title, LV_ALIGN_CENTER, 0, -152);
 
@@ -60,7 +60,7 @@ void ui_meater_create(lv_obj_t *p) {
   lv_obj_align(s_dot, LV_ALIGN_CENTER, -52, -122);
 
   s_state = lv_label_create(p);
-  lv_obj_set_style_text_font(s_state, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(s_state, &font_ui_14, 0);
   lv_obj_align(s_state, LV_ALIGN_CENTER, 6, -122);
 
   s_temp = lv_label_create(p);
@@ -69,7 +69,7 @@ void ui_meater_create(lv_obj_t *p) {
 
   s_unit = lv_label_create(p);
   lv_label_set_text(s_unit, "°C");
-  lv_obj_set_style_text_font(s_unit, &lv_font_montserrat_20, 0);
+  lv_obj_set_style_text_font(s_unit, &font_ui_20, 0);
   lv_obj_set_style_text_color(s_unit, col_dim(), 0);
 
   // Ohne Verbindung stand hier "--.-" - das sieht nach Fehler aus. Stattdessen
@@ -80,7 +80,7 @@ void ui_meater_create(lv_obj_t *p) {
   lv_obj_add_flag(s_logo, LV_OBJ_FLAG_HIDDEN);
 
   s_info = lv_label_create(p);
-  lv_obj_set_style_text_font(s_info, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(s_info, &font_ui_14, 0);
   lv_obj_set_style_text_color(s_info, col_dim(), 0);
   lv_obj_align(s_info, LV_ALIGN_CENTER, 0, 6);
 
@@ -94,11 +94,11 @@ void ui_meater_create(lv_obj_t *p) {
   lv_obj_clear_flag(s_target_box, LV_OBJ_FLAG_SCROLLABLE | LV_OBJ_FLAG_CLICKABLE);
 
   s_target_lbl = lv_label_create(s_target_box);
-  lv_obj_set_style_text_font(s_target_lbl, &lv_font_montserrat_20, 0);
+  lv_obj_set_style_text_font(s_target_lbl, &font_ui_20, 0);
   lv_obj_align(s_target_lbl, LV_ALIGN_LEFT_MID, 2, 0);
 
   s_done_lbl = lv_label_create(s_target_box);
-  lv_obj_set_style_text_font(s_done_lbl, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(s_done_lbl, &font_ui_14, 0);
   lv_obj_set_style_text_color(s_done_lbl, col_dim(), 0);
   lv_obj_align(s_done_lbl, LV_ALIGN_RIGHT_MID, -2, 0);
 
@@ -153,7 +153,7 @@ void ui_meater_update() {
     lv_obj_add_flag(s_temp, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(s_logo, LV_OBJ_FLAG_HIDDEN);
     lv_obj_add_flag(s_unit, LV_OBJ_FLAG_HIDDEN);
-    lv_label_set_text(s_info, st == MEATER_SEARCHING ? "Fuehler aus der Ladeschale nehmen" : "");
+    lv_label_set_text(s_info, st == MEATER_SEARCHING ? "Fühler aus der Ladeschale nehmen" : "");
     lv_obj_set_style_text_color(s_info, col_dim(), 0);
   }
 

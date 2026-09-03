@@ -17,11 +17,11 @@
 #define EGG_MELODY 9
 
 #define ROWS 3
-static const char *LBL[ROWS]  = { "Groesse", "Start", "Ergebnis" };
+static const char *LBL[ROWS]  = { "Grösse", "Start", "Ergebnis" };
 // Schweizer Verkaufsgroessen - so steht es auf der Eierschachtel, danach waehlt
 // man im Laden. Gerechnet wird mit der Mitte des jeweiligen Bereichs (MASS).
 static const char *SIZE_T[4]  = { "S  < 53 g", "M  53-63 g", "L  63-73 g", "XL  > 73 g" };
-static const char *START_T[2] = { "Kuehlschrank", "Zimmer" };
+static const char *START_T[2] = { "Kühlschrank", "Zimmer" };
 static const char *DONE_T[3]  = { "weich", "wachsweich", "hart" };
 static const int   COUNT[ROWS] = { 4, 2, 3 };
 
@@ -56,13 +56,13 @@ static void start_cb(lv_event_t *) {
   haptic_bump();
   ui_goto(TILE_ACTIVE);
   ui_active_update();
-  ui_toast("Eieruhr laeuft");
+  ui_toast("Eieruhr läuft");
 }
 
 void ui_egg_create(lv_obj_t *p) {
   lv_obj_t *title = lv_label_create(p);
   lv_label_set_text(title, "Eieruhr");
-  lv_obj_set_style_text_font(title, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(title, &font_ui_14, 0);
   lv_obj_set_style_text_color(title, col_dim(), 0);
   lv_obj_align(title, LV_ALIGN_CENTER, 0, -152);
 
@@ -81,12 +81,12 @@ void ui_egg_create(lv_obj_t *p) {
 
     lv_obj_t *l = lv_label_create(row);
     lv_label_set_text(l, LBL[i]);
-    lv_obj_set_style_text_font(l, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_font(l, &font_ui_14, 0);
     lv_obj_set_style_text_color(l, col_dim(), 0);
     lv_obj_align(l, LV_ALIGN_LEFT_MID, 0, 0);
 
     s_val[i] = lv_label_create(row);
-    lv_obj_set_style_text_font(s_val[i], &lv_font_montserrat_16, 0);
+    lv_obj_set_style_text_font(s_val[i], &font_ui_16, 0);
     lv_obj_align(s_val[i], LV_ALIGN_RIGHT_MID, 0, 0);
   }
 

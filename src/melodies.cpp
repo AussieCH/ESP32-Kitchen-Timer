@@ -60,12 +60,12 @@ static const Note m20[] = { {C5,300},{E5,300},{G5,300},{C6,500},{REST,200},{C5,3
 
 const Melody MELODIES[] = {
   M("Geburtstag",    m01),  M("Bruder Jakob",  m02),  M("Entchen",       m03),
-  M("Jingle Bells",  m04),  M("Ode Freude",    m05),  M("Haenschen",     m06),
+  M("Jingle Bells",  m04),  M("Ode Freude",    m05),  M("Hänschen",     m06),
   M("London Bridge", m07),  M("Saints",        m08),  M("Au clair",      m09),
-  M("Fuer Elise",    m10),  M("Nachtmusik",    m11),  M("Morgen",        m12),
-  M("Tuerk. Marsch", m13),  M("Habanera",      m14),  M("Westminster",   m15),
+  M("Für Elise",    m10),  M("Nachtmusik",    m11),  M("Morgen",        m12),
+  M("Türk. Marsch", m13),  M("Habanera",      m14),  M("Westminster",   m15),
   M("Gran Vals",     m16),  M("Tetris",        m17),  M("Game Start",    m18),
-  M("Tuergong",      m19),  M("Alarm",         m20),
+  M("Türgong",      m19),  M("Alarm",         m20),
 };
 const int MELODY_COUNT = sizeof(MELODIES) / sizeof(MELODIES[0]);
 

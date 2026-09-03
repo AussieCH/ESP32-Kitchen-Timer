@@ -84,7 +84,7 @@ static void del_yes(void *) {
   for (int i = 0; i < active_count(); i++)
     if (active_at(i)->id == s_pending_id) { timer_delete(i); break; }
   s_paint_sig = 0xFFFFFFFF;
-  ui_toast("Timer geloescht");
+  ui_toast("Timer gelöscht");
   ui_active_update();
 }
 
@@ -92,7 +92,7 @@ static void del_cb(lv_event_t *) {
   int i = sel_timer_index();
   if (i < 0) return;
   s_pending_id = active_at(i)->id;
-  ui_confirm("Timer loeschen?", del_yes, nullptr);
+  ui_confirm("Timer löschen?", del_yes, nullptr);
 }
 
 static void stop_alarm(int idx) {
@@ -177,7 +177,7 @@ void ui_active_create(lv_obj_t *p) {
   lv_obj_align(s_time, LV_ALIGN_CENTER, 0, -6);
 
   s_sub = lv_label_create(p);
-  lv_obj_set_style_text_font(s_sub, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(s_sub, &font_ui_14, 0);
   lv_obj_set_style_text_color(s_sub, col_dim(), 0);
   lv_obj_align(s_sub, LV_ALIGN_CENTER, 0, 52);
 
@@ -188,7 +188,7 @@ void ui_active_create(lv_obj_t *p) {
   lv_obj_align(s_btn_plus, LV_ALIGN_CENTER, 60, 99);
 
   s_idx = lv_label_create(p);
-  lv_obj_set_style_text_font(s_idx, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(s_idx, &font_ui_14, 0);
   lv_obj_set_style_text_color(s_idx, col_dim(), 0);
   lv_obj_align(s_idx, LV_ALIGN_CENTER, 0, 136);
 
@@ -259,7 +259,7 @@ static void show_stopwatch(int pos, int n) {
                                                       : LV_SYMBOL_PLAY " Weiter");
   lv_obj_set_style_bg_color(s_btn_pause, lv_color_hex(0x272B33), 0);
   lv_obj_set_style_text_color(lv_obj_get_child(s_btn_pause, 0), lv_color_white(), 0);
-  button_set_text(s_btn_plus, "Zurueck");
+  button_set_text(s_btn_plus, "Zurück");
 }
 
 void ui_active_update() {

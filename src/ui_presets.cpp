@@ -41,12 +41,12 @@ static void menu_edit_cb(lv_event_t *)   {
 }
 static void menu_del_yes(void *u) {
   preset_delete((int)(intptr_t)u);
-  ui_toast("Vorlage geloescht");
+  ui_toast("Vorlage gelöscht");
   ui_presets_update();
 }
 static void menu_del_cb(lv_event_t *) {
   int i = s_menu_idx; menu_close();
-  ui_confirm("Vorlage loeschen?", menu_del_yes, (void *)(intptr_t)i);
+  ui_confirm("Vorlage löschen?", menu_del_yes, (void *)(intptr_t)i);
 }
 static void menu_bg_cb(lv_event_t *) { menu_close(); }
 
@@ -70,7 +70,7 @@ static void open_menu(int idx) {
   char buf[16]; fmt_time(buf, sizeof(buf), p->total_s);
   lv_obj_t *t = lv_label_create(s_menu);
   lv_label_set_text_fmt(t, "%s  %s", buf, icon_name(p->icon));
-  lv_obj_set_style_text_font(t, &lv_font_montserrat_20, 0);
+  lv_obj_set_style_text_font(t, &font_ui_20, 0);
   lv_obj_align(t, LV_ALIGN_CENTER, 0, -110);
 
   lv_obj_t *b;
@@ -79,7 +79,7 @@ static void open_menu(int idx) {
   button_set_color(b, lv_palette_main(LV_PALETTE_AMBER));
   b = make_button(s_menu, LV_SYMBOL_EDIT " Editieren", 200, 56, menu_edit_cb, nullptr);
   lv_obj_align(b, LV_ALIGN_CENTER, 0, 14);
-  b = make_button(s_menu, LV_SYMBOL_TRASH " Loeschen", 200, 56, menu_del_cb, nullptr);
+  b = make_button(s_menu, LV_SYMBOL_TRASH " Löschen", 200, 56, menu_del_cb, nullptr);
   lv_obj_align(b, LV_ALIGN_CENTER, 0, 78);
 }
 
@@ -145,7 +145,7 @@ static void rebuild() {
 
     lv_obj_t *nl = lv_label_create(row);
     lv_label_set_text(nl, icon_name(p->icon));
-    lv_obj_set_style_text_font(nl, &lv_font_montserrat_14, 0);
+    lv_obj_set_style_text_font(nl, &font_ui_14, 0);
     lv_obj_set_style_text_color(nl, col_dim(), 0);
     lv_obj_align(nl, LV_ALIGN_LEFT_MID, 54, 16);
   }
@@ -161,7 +161,7 @@ static void rebuild() {
 void ui_presets_create(lv_obj_t *p) {
   lv_obj_t *title = lv_label_create(p);
   lv_label_set_text(title, "Vorlagen");
-  lv_obj_set_style_text_font(title, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(title, &font_ui_14, 0);
   lv_obj_set_style_text_color(title, col_dim(), 0);
   lv_obj_align(title, LV_ALIGN_CENTER, 0, -150);
 
@@ -180,7 +180,7 @@ void ui_presets_create(lv_obj_t *p) {
 
   s_hint = lv_label_create(p);
   lv_label_set_text(s_hint, "lang tippen = mehr");
-  lv_obj_set_style_text_font(s_hint, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(s_hint, &font_ui_14, 0);
   lv_obj_set_style_text_color(s_hint, col_dim(), 0);
   lv_obj_align(s_hint, LV_ALIGN_CENTER, 0, 140);
 

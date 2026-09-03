@@ -77,7 +77,7 @@ void setup() {
   // still und das Geraet wirkt eingefroren. Timeout 0 = lieber verwerfen.
   Serial.setTxTimeoutMs(0);
   delay(200);
-  Serial.printf("\n[boot] Kuechentimer auf %s\n", BOARD_NAME);
+  Serial.printf("\n[boot] Küchentimer auf %s\n", BOARD_NAME);
 
   lcd.init();
   lcd.setRotation(0);

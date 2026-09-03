@@ -50,7 +50,7 @@ lv_obj_t *rondo_mark_create(lv_obj_t *parent, int ring_r, int dot_d, bool with_w
   if (with_word) {
     lv_obj_t *name = lv_label_create(box);
     lv_label_set_text(name, "RONDO");
-    lv_obj_set_style_text_font(name, &lv_font_montserrat_28, 0);
+    lv_obj_set_style_text_font(name, &font_ui_28, 0);
     lv_obj_set_style_text_color(name, lv_color_hex(COL_CREAM), 0);
     lv_obj_set_style_text_letter_space(name, 6, 0);
     lv_obj_center(name);

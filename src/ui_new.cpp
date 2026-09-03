@@ -85,7 +85,7 @@ static void cancel_cb(lv_event_t *) {
 void ui_new_create(lv_obj_t *p) {
   lv_obj_t *title = lv_label_create(p);
   lv_label_set_text(title, "Neuer Timer");
-  lv_obj_set_style_text_font(title, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(title, &font_ui_14, 0);
   lv_obj_set_style_text_color(title, col_dim(), 0);
   lv_obj_align(title, LV_ALIGN_CENTER, 0, -142);
 

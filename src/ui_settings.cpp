@@ -69,11 +69,11 @@ static void make_row(lv_obj_t *p, const char *name, int y, int idx) {
 
   lv_obj_t *l = lv_label_create(box);
   lv_label_set_text(l, name);
-  lv_obj_set_style_text_font(l, &lv_font_montserrat_16, 0);
+  lv_obj_set_style_text_font(l, &font_ui_16, 0);
   lv_obj_align(l, LV_ALIGN_TOP_LEFT, 0, 0);
 
   s_val[idx] = lv_label_create(box);
-  lv_obj_set_style_text_font(s_val[idx], &lv_font_montserrat_16, 0);
+  lv_obj_set_style_text_font(s_val[idx], &font_ui_16, 0);
   lv_obj_align(s_val[idx], LV_ALIGN_TOP_RIGHT, 0, 0);
 
   s_bar[idx] = lv_bar_create(box);
@@ -87,17 +87,17 @@ static void make_row(lv_obj_t *p, const char *name, int y, int idx) {
 void ui_settings_create(lv_obj_t *p) {
   lv_obj_t *title = lv_label_create(p);
   lv_label_set_text(title, "Einstellungen");
-  lv_obj_set_style_text_font(title, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(title, &font_ui_14, 0);
   lv_obj_set_style_text_color(title, col_dim(), 0);
   lv_obj_align(title, LV_ALIGN_CENTER, 0, -142);
 
   make_row(p, LV_SYMBOL_SETTINGS "  Helligkeit",  -70, 0);
-  make_row(p, LV_SYMBOL_VOLUME_MAX "  Lautstaerke", 16, ROW_VOL);
+  make_row(p, LV_SYMBOL_VOLUME_MAX "  Lautstärke", 16, ROW_VOL);
   lv_obj_t *b = make_button(p, LV_SYMBOL_BELL " Alarm testen", 200, 54, test_cb, nullptr);
   lv_obj_align(b, LV_ALIGN_CENTER, 0, 100);
 
   s_batt = lv_label_create(p);
-  lv_obj_set_style_text_font(s_batt, &lv_font_montserrat_14, 0);
+  lv_obj_set_style_text_font(s_batt, &font_ui_14, 0);
   lv_obj_set_style_text_color(s_batt, col_dim(), 0);
   lv_obj_align(s_batt, LV_ALIGN_CENTER, 0, 148);
 }
@@ -112,12 +112,16 @@ void ui_settings_update() {
   static int last_pct = -999;
   if (pct != last_pct) {
     last_pct = pct;
+    char bbuf[40];
     if (battery_is_cell()) {
-      lv_label_set_text_fmt(s_batt, LV_SYMBOL_BATTERY_FULL "  %d %%   %.2f V", pct, battery_volts());
+      // lv_label_set_text_fmt kann keine Kommazahlen - selbst formatieren
+      snprintf(bbuf, sizeof(bbuf), LV_SYMBOL_BATTERY_FULL "  %d %%   %.2f V", pct, battery_volts());
+      lv_label_set_text(s_batt, bbuf);
       lv_obj_set_style_text_color(s_batt, battery_low() ? lv_palette_main(LV_PALETTE_RED)
                                                         : col_dim(), 0);
     } else {
-      lv_label_set_text_fmt(s_batt, LV_SYMBOL_USB "  %.2f V", battery_volts());
+      snprintf(bbuf, sizeof(bbuf), LV_SYMBOL_USB "  %.2f V", battery_volts());
+      lv_label_set_text(s_batt, bbuf);
       lv_obj_set_style_text_color(s_batt, col_dim(), 0);
     }
   }
