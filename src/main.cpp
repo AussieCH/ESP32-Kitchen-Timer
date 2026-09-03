@@ -128,9 +128,16 @@ void setup() {
   ui_splash_show();          // RONDO-Logo, laeuft im Hintergrund aus
   s_last_input_ms = millis();
   app_apply_brightness(setting_brightness());
-  Serial.printf("[boot] frei: %u B intern, %u B PSRAM\n",
-                (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL),
-                (unsigned)heap_caps_get_free_size(MALLOC_CAP_SPIRAM));
+  // Ausfuehrlich, weil "wieviel Speicher ist frei" drei verschiedene Zahlen
+  // meinen kann: was der Chip hat, was der Anwendung davon zusteht, und was
+  // davon nach allen Allokationen uebrig ist.
+  Serial.printf("[boot] intern: %u KB frei von %u KB Heap, groesster Block %u KB\n",
+                (unsigned)(heap_caps_get_free_size(MALLOC_CAP_INTERNAL) / 1024),
+                (unsigned)(heap_caps_get_total_size(MALLOC_CAP_INTERNAL) / 1024),
+                (unsigned)(heap_caps_get_largest_free_block(MALLOC_CAP_INTERNAL) / 1024));
+  Serial.printf("[boot] PSRAM:  %u KB frei von %u KB\n",
+                (unsigned)(heap_caps_get_free_size(MALLOC_CAP_SPIRAM) / 1024),
+                (unsigned)(heap_caps_get_total_size(MALLOC_CAP_SPIRAM) / 1024));
 }
 
 void loop() {

@@ -147,6 +147,15 @@ Simulator: 64 KB); damit sind wieder rund 55 KB frei.
 
 NimBLE selbst läuft dabei in der **Standardkonfiguration**, also mit bis zu drei
 gleichzeitigen Verbindungen — die gemessenen 55 KB gelten für diesen Zustand.
+
+Zur Einordnung der Speicherzahlen, weil sie leicht durcheinandergehen: Der S3
+hat **512 KB SRAM**, davon stehen dem Linker **320 KB** für statische Daten zu
+(der Rest ist IRAM, Cache und ROM-Reservierung), und der Allokator verwaltet zur
+Laufzeit **234 KB Heap**. Frei sind davon rund **53 KB**, der grösste
+zusammenhängende Block misst **30 KB** — letzteres ist die Grenze, gegen die
+eine einzelne grosse Allokation zuerst läuft. Die 8 MB PSRAM sind praktisch
+unberührt; LVGLs Pool liegt bewusst im schnellen internen RAM, liesse sich aber
+dorthin verschieben, falls es je eng wird.
 Für mehrere Fühler (MEATER Duo, Block) ist der Stack damit bereits gerüstet;
 begrenzt ist nur die Anwendung, die heute genau einen Fühler führt.
 
