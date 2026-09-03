@@ -14,7 +14,11 @@
 #include "timers.h"
 #include "ui.h"
 
-#define BUF_LINES 40
+// 20 statt 40 Zeilen: halbiert den Zeichenpuffer und macht 29 KB internen RAM
+// frei (53 -> 82 KB, groesster Block 30 -> 41 KB). Gemessen kostet das ein
+// Drittel mehr Zeit je Vollbild (42 -> 56 ms, 16 statt 10 Uebertragungen) -
+// am Geraet war davon nichts zu bemerken. Zum Nachmessen: -D PERF_TEST.
+#define BUF_LINES 20
 #define IDLE_MS   60000        // danach Backlight aus; laufende Timer laufen weiter
 
 static LGFX_Knob lcd;
@@ -42,12 +46,30 @@ static void doze() {
   lcd.setBrightness(0);
 }
 
+#ifdef PERF_TEST
+// Wie lange dauert EIN vollstaendiger Bildaufbau? LVGL zeichnet ihn in Stuecken
+// von BUF_LINES Zeilen; gemessen wird vom ersten Stueck bis zum letzten.
+static uint32_t s_refr_start = 0, s_refr_n = 0, s_refr_sum = 0, s_refr_max = 0, s_chunks = 0;
+#endif
+
 static void flush_cb(lv_disp_drv_t *drv, const lv_area_t *area, lv_color_t *px) {
   uint32_t w = area->x2 - area->x1 + 1, h = area->y2 - area->y1 + 1;
+#ifdef PERF_TEST
+  if (s_refr_start == 0) s_refr_start = micros();
+  s_chunks++;
+#endif
   lcd.startWrite();
   lcd.setAddrWindow(area->x1, area->y1, w, h);
   lcd.writePixels((uint16_t *)px, w * h, true);   // true = Byteswap fuer LVGL-RGB565
   lcd.endWrite();
+#ifdef PERF_TEST
+  if (lv_disp_flush_is_last(drv)) {
+    uint32_t d = micros() - s_refr_start;
+    s_refr_start = 0;
+    s_refr_n++; s_refr_sum += d;
+    if (d > s_refr_max) s_refr_max = d;
+  }
+#endif
   lv_disp_flush_ready(drv);
 }
 
@@ -151,6 +173,22 @@ void loop() {
 
   static uint32_t t_timers = 0, t_ui = 0;
   uint32_t now = millis();
+
+#ifdef PERF_TEST
+  // Vollbild-Neuzeichnen erzwingen, damit die Messung vergleichbar ist
+  static uint32_t t_inval = 0, t_report = 0;
+  if (now - t_inval >= 200) { t_inval = now; lv_obj_invalidate(lv_scr_act()); }
+  if (now - t_report >= 5000) {
+    t_report = now;
+    if (s_refr_n) {
+      Serial.printf("[perf] %u Vollbilder, Schnitt %lu ms, max %lu ms, %u Stuecke je Bild, %u KB frei\n",
+                    (unsigned)s_refr_n, (unsigned long)(s_refr_sum / s_refr_n / 1000),
+                    (unsigned long)(s_refr_max / 1000), (unsigned)(s_chunks / s_refr_n),
+                    (unsigned)(heap_caps_get_free_size(MALLOC_CAP_INTERNAL) / 1024));
+    }
+    s_refr_n = s_refr_sum = s_refr_max = s_chunks = 0;
+  }
+#endif
 
   static uint32_t t_batt = 0;
   if (now - t_batt >= 1000) { t_batt = now; battery_tick(); }

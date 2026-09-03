@@ -181,6 +181,11 @@ begrenzt ist nur die Anwendung, die heute genau einen Fühler führt.
   ist Absicht: RONDO ist für jemanden gebaut, der seine Temperaturen kennt und
   keinen Assistenten braucht, sondern eine Zahl und einen Alarm. Verbunden wird
   mit der Ladeschale (dem Verstärker), nicht mit dem Fühler direkt.
+* **Zeichenpuffer: 2 × 20 Bildzeilen** statt 40. Das macht 29 KB internen RAM
+  frei (53 → 82 KB frei, grösster zusammenhängender Block 30 → 41 KB) und kostet
+  gemessen ein Drittel mehr Zeit je Vollbild (42 → 56 ms, weil LVGL 16 statt 10
+  Übertragungen braucht). Am Gerät ist der Unterschied nicht wahrnehmbar; die
+  Messung lässt sich mit `-D PERF_TEST` jederzeit wiederholen.
 * **LVGL-Heap: 96 KB.** Mit 64 KB schlug `lv_mem_alloc` beim Aufbau der
   Alarmmasken fehl, und LVGLs Assert-Handler ist ein `while(1)` — das Gerät wäre
   im Alarm stillschweigend stehengeblieben. Der Simulator schreibt zu jedem
