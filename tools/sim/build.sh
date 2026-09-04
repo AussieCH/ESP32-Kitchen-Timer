@@ -23,4 +23,19 @@ clang++ -std=gnu++17 -O1 -w $INC \
   src/icons.cpp src/timers.cpp src/melodies.cpp src/lang.cpp tools/sim/obj/gen_*.o \
   tools/sim/stubs.cpp tools/sim/sim_main.cpp \
   tools/sim/obj/lvgl.a -o tools/sim/sim
+# Der Simulator schreibt PPM (ein fopen, keine Bibliothek). PDF und README
+# brauchen PNG - die Umwandlung gehoert hierher und nicht in Handarbeit,
+# sonst zeigt die Anleitung irgendwann Screenshots von vorgestern.
+set +e
 tools/sim/sim "$@"
+STATUS=$?
+set -e
+python3 - <<'PYEOF'
+from PIL import Image
+import glob, os
+for p in glob.glob("tools/sim/out/*.ppm"):
+    png = p[:-4] + ".png"
+    if not os.path.exists(png) or os.path.getmtime(png) < os.path.getmtime(p):
+        Image.open(p).save(png, optimize=True)
+PYEOF
+exit $STATUS

@@ -31,8 +31,8 @@
 wirklich das, was auf dem Gerät steht.</sub></p>
 
 Gebaut mit Arduino-Core 3.x (pioarduino), LVGL 8.4 und LovyanGFX
-(`Panel_ST77916`, QSPI). Eine ausführliche Bedienungsanleitung liegt als
-[PDF](RONDO-Anleitung.pdf) bei.
+(`Panel_ST77916`, QSPI). Eine ausführliche Bedienungsanleitung liegt als PDF bei, in beiden Sprachen:
+[deutsch](RONDO-Anleitung.pdf) · [englisch](RONDO-Manual.pdf).
 
 ## Hardware
 
@@ -357,8 +357,8 @@ offengelegte Bluetooth-Protokoll.</sub>
 literally what the device shows.</sub></p>
 
 Built with the Arduino core 3.x (pioarduino), LVGL 8.4 and LovyanGFX
-(`Panel_ST77916`, QSPI). A detailed user manual is included as a
-[PDF](RONDO-Anleitung.pdf) — that one is German only.
+(`Panel_ST77916`, QSPI). A detailed user manual is included as a PDF, in both languages:
+[English](RONDO-Manual.pdf) · [German](RONDO-Anleitung.pdf).
 
 ## Hardware
 
