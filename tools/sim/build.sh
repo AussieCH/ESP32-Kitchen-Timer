@@ -20,7 +20,7 @@ for f in src/gen/*.c; do clang -x c -O1 -w $INC -c "$f" -o "tools/sim/obj/gen_$(
 
 clang++ -std=gnu++17 -O1 -w $INC \
   src/ui.cpp src/ui_splash.cpp src/ui_overview.cpp src/ui_active.cpp src/ui_egg.cpp src/ui_meater.cpp src/alarm.cpp src/ui_stopwatch.cpp src/ui_new.cpp src/ui_presets.cpp src/ui_settings.cpp \
-  src/icons.cpp src/timers.cpp src/melodies.cpp tools/sim/obj/gen_*.o \
+  src/icons.cpp src/timers.cpp src/melodies.cpp src/lang.cpp tools/sim/obj/gen_*.o \
   tools/sim/stubs.cpp tools/sim/sim_main.cpp \
   tools/sim/obj/lvgl.a -o tools/sim/sim
-tools/sim/sim
+tools/sim/sim "$@"

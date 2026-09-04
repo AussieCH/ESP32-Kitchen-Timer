@@ -231,7 +231,7 @@ def content(st):
         ("Grill-Thermometer", "zeigt die Temperatur im Fleisch"),
         ("Stoppuhr", "zählt vorwärts statt rückwärts"),
         ("Vorlagen", "gespeicherte Zeiten, mit einem Tipp gestartet"),
-        ("Einstellungen", "Helligkeit, Lautstärke, Akku"),
+        ("Einstellungen", "Helligkeit, Lautstärke, Sprache, Akku"),
     ]
     rows = [[Paragraph(f"<b>{n}</b>", S_BODY), Paragraph(b, S_BODY)] for n, b in seiten]
     t = Table(rows, colWidths=[38 * mm, None])
@@ -334,10 +334,12 @@ def content(st):
     st.append(screen_block(
         shot("5-einstellungen.png"), "Einstellungen",
         ["<b>Helligkeit</b> und <b>Lautstärke</b>: Zeile antippen, dann mit dem Ring einstellen.",
+         "<b>Sprache</b>: dieselbe Bedienung — Zeile antippen, Ring drehen. Zur Wahl stehen "
+         "<b>Deutsch</b> und <b>English</b>; die ganze Anzeige wechselt sofort mit.",
          "<b>Alarm testen</b> spielt einmal vor, was passiert, wenn eine Zeit abläuft.",
          "Ganz unten steht der <b>Akkustand</b>. Hängt das Gerät am Strom, zeigt es die Spannung "
          "statt einer Prozentzahl — beim Laden wäre eine Prozentangabe geraten."],
-        "Helligkeit und Lautstärke"))
+        "Helligkeit, Lautstärke und Sprache"))
 
     st.append(Paragraph("Der Leuchtring", S_H1))
     st.append(Paragraph(
@@ -358,7 +360,7 @@ def content(st):
          "geht der Bildschirm von selbst wieder an."),
         ("Ich habe den Stecker gezogen, und die Zeiten sind weg.",
          "Laufende Zeiten überstehen einen Stromausfall nicht — das Gerät hat keine Uhr, die "
-         "weiterläuft. Ihre <b>Vorlagen, Helligkeit und Lautstärke</b> bleiben dagegen gespeichert."),
+         "weiterläuft. Ihre <b>Vorlagen, Helligkeit, Lautstärke und Sprache</b> bleiben dagegen gespeichert."),
         ("Ich habe den Alarm überhört.",
          "Lautstärke in den Einstellungen höher stellen. Das Brummen und der Leuchtring laufen "
          "unabhängig davon immer mit."),

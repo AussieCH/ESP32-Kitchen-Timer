@@ -53,6 +53,8 @@ void  preset_delete(int idx);
 // --- Einstellungen ----------------------------------------------------------
 int   setting_brightness();       // 10..100
 void  setting_set_brightness(int v);
+int   setting_lang();             // 0 = Deutsch, 1 = English
+void  setting_set_lang(int l);
 int   setting_meater_target();    // Zieltemperatur des Grill-Thermometers, °C
 void  setting_set_meater_target(int c);
 bool  setting_meater_armed();

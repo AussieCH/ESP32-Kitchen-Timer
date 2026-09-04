@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <lvgl.h>
 #include "ui.h"
+#include "lang.h"
 #include "timers.h"
 #include "meater.h"
 #include "alarm.h"
@@ -25,9 +26,11 @@ static void settle(int ms) {
   lv_refr_now(nullptr);
 }
 
+static const char *s_prefix = "";
+
 static void shot(const char *name) {
   char path[256];
-  snprintf(path, sizeof(path), "tools/sim/out/%s.ppm", name);
+  snprintf(path, sizeof(path), "tools/sim/out/%s%s.ppm", s_prefix, name);
   FILE *f = fopen(path, "wb");
   fprintf(f, "P6\n%d %d\n255\n", SCR_W, SCR_H);
   for (int i = 0; i < SCR_W * SCR_H; i++) {
@@ -97,7 +100,11 @@ static void scene(const char *name) {
   check(lv_layer_top(), name, full);
 }
 
-int main() {
+// Mit "en" als Argument laufen dieselben Szenen auf Englisch durch - die
+// Layoutpruefung faengt dann Texte, die in der laengeren Sprache anstossen.
+int main(int argc, char **argv) {
+  bool english = (argc > 1 && strcmp(argv[1], "en") == 0);
+  if (english) s_prefix = "en-";
   lv_init();
   static lv_disp_draw_buf_t db;
   static lv_color_t buf[SCR_W * 40];
@@ -108,6 +115,8 @@ int main() {
   lv_disp_drv_register(&dd);
 
   timers_init();
+  // erst nach timers_init(): das laedt die gespeicherte Sprache
+  if (english) setting_set_lang(LANG_EN);
   ui_init();
 
   ui_splash_show();
@@ -199,7 +208,7 @@ int main() {
   ui_alarm_check();
   scene("6-alarm");
 
-  ui_confirm("Timer loeschen?", nullptr, nullptr);
+  ui_confirm(T(T_Q_DELETE_TIMER), nullptr, nullptr);
   scene("7-rueckfrage");
 
   printf("\n%s: %d Layoutverletzungen\n", violations ? "FEHLER" : "OK", violations);

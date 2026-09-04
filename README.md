@@ -65,7 +65,24 @@ Screens, unten zeigen Punkte die Position; nach dem Start steht man auf *Aktiv*:
 | **Grill-Thermometer** | Kerntemperatur des MEATER-Fühlers gross, dazu Garraum, Fühler-Akku und Verbindungszustand; **Zieltemperatur mit Alarm** | stellt die Zieltemperatur |
 | **Stoppuhr** | zählt hoch, mit Zehnteln; läuft im Hintergrund weiter und erscheint dann auch im Aktiv-Screen und in der Übersicht | — |
 | **Vorlagen** | Liste; **tippen = starten**, **lang tippen** = Starten/Editieren/Löschen | scrollt die Liste |
-| **Einstellungen** | Helligkeit, Lautstärke, *Alarm testen*, Akkuzustand | stellt die gewählte Zeile |
+| **Einstellungen** | Helligkeit, Lautstärke, **Sprache** (Deutsch/English), *Alarm testen*, Akkuzustand | stellt die gewählte Zeile |
+
+### Zwei Sprachen
+
+Die Oberfläche spricht **Deutsch oder Englisch**, umgestellt in den
+Einstellungen — dritte Zeile, mit dem Ring gewählt wie Helligkeit und
+Lautstärke. Umgeschaltet wird sofort und überall: Titel, Buttons, Meldungen,
+die Namen der 33 Icons und der 20 Melodien.
+
+Alle Texte stehen in `src/lang.cpp` als eine Tabelle `{ deutsch, englisch }`,
+adressiert über eine Aufzählung; ein `static_assert` stellt sicher, dass keine
+Zeile fehlt. Jeder Screen zeichnet nur neu, wenn sich etwas geändert hat — die
+Sprachnummer (`lang_rev()`) gehört deshalb in jede dieser Wachen, sonst bliebe
+nach dem Umschalten der alte Text stehen.
+
+Der Simulator rendert beide Sprachen (`tools/sim/build.sh en`) — englische
+Texte sind teils länger, und genau daran ist beim Bauen zweimal etwas
+angestossen.
 
 Beim Start läuft das **RONDO-Logo**: 13 Punkte im Kreis, der orange wandert
 einmal herum — synchron über die 13 echten LEDs des Rings. Antippen überspringt.
@@ -168,7 +185,7 @@ begrenzt ist nur die Anwendung, die heute genau einen Fühler führt.
   Icon aktualisiert die vorhandene, statt sie zu duplizieren).
 * Nach 60 s ohne Eingabe geht das Backlight aus; Timer laufen weiter, ein Ablauf
   weckt. Die Berührung bzw. Rastung, die aufweckt, löst nichts aus.
-* Helligkeit und Lautstärke liegen im NVS und überleben den Neustart. Laufende
+* Helligkeit, Lautstärke und Sprache liegen im NVS und überleben den Neustart. Laufende
   Timer überleben einen Reboot **nicht** — ohne RTC ginge das nur unsauber.
 * Die **Akkuanzeige ist eine Heuristik**: über 4.25 V (Laden) wird bewusst nur
   die Spannung gezeigt, keine erfundene Prozentzahl. Die Kennlinie gehört pro
@@ -277,6 +294,7 @@ src/input_knob.*     Impulsdekodierung mit Teiler und Gegenleitungssperre
 src/haptics.*        DRV2605 als LRA: Rastung, Bestaetigung, Alarm-Schnarren
 src/audio.*          I2S-Tonsynthese, Lautstaerke, Fade-in
 src/melodies.*       20 Alarmmelodien als Notentabellen
+src/lang.*           Textkatalog Deutsch/English, Umschaltung zur Laufzeit
 src/leds.*           WS2812-Ring: Restzeit in der Timer-Farbe, Alarmblinken, Logo
 src/battery.*        Spannungsmessung mit Ueberabtastung und Kennlinie
 src/meater.*         BLE-Client fuer das MEATER-Grill-Thermometer

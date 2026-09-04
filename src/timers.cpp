@@ -3,6 +3,7 @@
 #include <esp_timer.h>
 #include "timers.h"
 #include "audio.h"
+#include "lang.h"
 
 static ActiveTimer s_act[MAX_ACTIVE];
 static ActiveTimer *s_sorted[MAX_ACTIVE];
@@ -15,6 +16,7 @@ static int s_preset_n = 0;
 
 static int s_brightness = 80;
 static int s_meater_target = 58;
+static int s_lang = LANG_DE;
 static bool s_meater_armed = false;
 static Preferences s_prefs;
 
@@ -30,6 +32,7 @@ void settings_save() {
   s_prefs.putInt("bright", s_brightness);
   s_prefs.putInt("vol", audio_get_volume());
   s_prefs.putInt("mtarget", s_meater_target);
+  s_prefs.putInt("lang", s_lang);
   s_prefs.putBool("marmed", s_meater_armed);
 }
 
@@ -45,6 +48,8 @@ void timers_init() {
   audio_set_volume(s_prefs.getInt("vol", 70));
   s_meater_target = constrain(s_prefs.getInt("mtarget", 58), 30, 99);
   s_meater_armed = s_prefs.getBool("marmed", false);
+  s_lang = constrain(s_prefs.getInt("lang", LANG_DE), 0, LANG_COUNT - 1);
+  lang_set((Lang)s_lang);         // vor dem Aufbau der Oberflaeche
 
   // Icon-IDs stecken in den Vorlagen: aendert sich der Icon-Satz, sind gespeicherte
   // Vorlagen wertlos - deshalb eine Version im NVS.
@@ -64,6 +69,8 @@ void timers_init() {
 
 int setting_brightness() { return s_brightness; }
 void setting_set_brightness(int v) { s_brightness = constrain(v, 10, 100); }
+int  setting_lang() { return s_lang; }
+void setting_set_lang(int l) { s_lang = constrain(l, 0, LANG_COUNT - 1); lang_set((Lang)s_lang); }
 int  setting_meater_target() { return s_meater_target; }
 void setting_set_meater_target(int c) { s_meater_target = constrain(c, 30, 99); }
 bool setting_meater_armed() { return s_meater_armed; }

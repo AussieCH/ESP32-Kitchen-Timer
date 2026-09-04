@@ -10,7 +10,10 @@
 #define REST 0
 
 struct Note   { uint16_t freq; uint16_t ms; };
-struct Melody { const char *name; const Note *notes; uint16_t count; };
+struct Melody { const char *de; const char *en; const Note *notes; uint16_t count; };
+
+// Name in der eingestellten Sprache
+const char *melody_name(const Melody *m);
 
 extern const Melody MELODIES[];
 extern const int    MELODY_COUNT;

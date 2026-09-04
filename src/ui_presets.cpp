@@ -4,9 +4,10 @@
 // Buttons nebeneinander stehen muessen.
 #include <Arduino.h>
 #include "ui.h"
+#include "lang.h"
 #include "haptics.h"
 
-static lv_obj_t *s_list, *s_hint, *s_empty;
+static lv_obj_t *s_list, *s_hint, *s_empty, *s_title;
 static lv_obj_t *s_rows[MAX_PRESETS];
 static int  s_row_n = 0;
 static int  s_sel = 0;
@@ -22,13 +23,13 @@ static void start_preset(int idx) {
   Preset *p = preset_at(idx);
   if (!p) return;
   int a = timer_start(p->total_s, p->icon, p->melody);
-  if (a < 0) { ui_toast("Zu viele Timer"); return; }
+  if (a < 0) { ui_toast(T(T_TOO_MANY)); return; }
   ActiveTimer *t = active_at(a);
   if (t) ui_active_focus_id(t->id);
   haptic_bump();
   ui_goto(TILE_ACTIVE);
   ui_active_update();
-  ui_toast("Timer gestartet");
+  ui_toast(T(T_TIMER_STARTED));
 }
 
 static void menu_start_cb(lv_event_t *)  { int i = s_menu_idx; menu_close(); start_preset(i); }
@@ -41,12 +42,12 @@ static void menu_edit_cb(lv_event_t *)   {
 }
 static void menu_del_yes(void *u) {
   preset_delete((int)(intptr_t)u);
-  ui_toast("Vorlage gelöscht");
+  ui_toast(T(T_TEMPLATE_DELETED));
   ui_presets_update();
 }
 static void menu_del_cb(lv_event_t *) {
   int i = s_menu_idx; menu_close();
-  ui_confirm("Vorlage löschen?", menu_del_yes, (void *)(intptr_t)i);
+  ui_confirm(T(T_Q_DELETE_TEMPLATE), menu_del_yes, (void *)(intptr_t)i);
 }
 static void menu_bg_cb(lv_event_t *) { menu_close(); }
 
@@ -74,12 +75,12 @@ static void open_menu(int idx) {
   lv_obj_align(t, LV_ALIGN_CENTER, 0, -110);
 
   lv_obj_t *b;
-  b = make_button(s_menu, LV_SYMBOL_PLAY " Starten", 200, 56, menu_start_cb, nullptr);
+  b = make_button(s_menu, lang_btn(LV_SYMBOL_PLAY, T_START_IT), 200, 56, menu_start_cb, nullptr);
   lv_obj_align(b, LV_ALIGN_CENTER, 0, -50);
   button_set_color(b, lv_palette_main(LV_PALETTE_AMBER));
-  b = make_button(s_menu, LV_SYMBOL_EDIT " Editieren", 200, 56, menu_edit_cb, nullptr);
+  b = make_button(s_menu, lang_btn(LV_SYMBOL_EDIT, T_EDIT), 200, 56, menu_edit_cb, nullptr);
   lv_obj_align(b, LV_ALIGN_CENTER, 0, 14);
-  b = make_button(s_menu, LV_SYMBOL_TRASH " Löschen", 200, 56, menu_del_cb, nullptr);
+  b = make_button(s_menu, lang_btn(LV_SYMBOL_TRASH, T_DELETE), 200, 56, menu_del_cb, nullptr);
   lv_obj_align(b, LV_ALIGN_CENTER, 0, 78);
 }
 
@@ -106,7 +107,7 @@ static void mark_selection() {
 }
 
 static uint32_t signature() {
-  uint32_t s = preset_count() * 2654435761u;
+  uint32_t s = preset_count() * 2654435761u + lang_rev() * 7919u;
   for (int i = 0; i < preset_count(); i++) {
     Preset *p = preset_at(i);
     s ^= (p->total_s * 31u + p->icon * 7u + p->melody) * (uint32_t)(i + 1);
@@ -159,11 +160,10 @@ static void rebuild() {
 }
 
 void ui_presets_create(lv_obj_t *p) {
-  lv_obj_t *title = lv_label_create(p);
-  lv_label_set_text(title, "Vorlagen");
-  lv_obj_set_style_text_font(title, &font_ui_14, 0);
-  lv_obj_set_style_text_color(title, col_dim(), 0);
-  lv_obj_align(title, LV_ALIGN_CENTER, 0, -150);
+  s_title = lv_label_create(p);
+  lv_obj_set_style_text_font(s_title, &font_ui_14, 0);
+  lv_obj_set_style_text_color(s_title, col_dim(), 0);
+  lv_obj_align(s_title, LV_ALIGN_CENTER, 0, -150);
 
   s_list = lv_obj_create(p);
   lv_obj_set_size(s_list, 252, 220);
@@ -179,13 +179,11 @@ void ui_presets_create(lv_obj_t *p) {
   lv_obj_set_scroll_snap_y(s_list, LV_SCROLL_SNAP_NONE);
 
   s_hint = lv_label_create(p);
-  lv_label_set_text(s_hint, "lang tippen = mehr");
   lv_obj_set_style_text_font(s_hint, &font_ui_14, 0);
   lv_obj_set_style_text_color(s_hint, col_dim(), 0);
   lv_obj_align(s_hint, LV_ALIGN_CENTER, 0, 140);
 
   s_empty = lv_label_create(p);
-  lv_label_set_text(s_empty, "Noch keine Vorlagen.\nEin gestarteter Timer\nwird automatisch eine.");
   lv_obj_set_style_text_align(s_empty, LV_TEXT_ALIGN_CENTER, 0);
   lv_obj_set_style_text_color(s_empty, col_dim(), 0);
   lv_obj_align(s_empty, LV_ALIGN_CENTER, 0, 0);
@@ -193,6 +191,9 @@ void ui_presets_create(lv_obj_t *p) {
 }
 
 void ui_presets_update() {
+  lv_label_set_text(s_title, T(T_TEMPLATES));
+  lv_label_set_text(s_hint, T(T_HINT_LONGPRESS));
+  lv_label_set_text(s_empty, T(T_NO_TEMPLATES));
   uint32_t sig = signature();
   if (sig != s_sig) { s_sig = sig; rebuild(); }
 }

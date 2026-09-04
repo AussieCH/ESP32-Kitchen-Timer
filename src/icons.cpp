@@ -6,35 +6,55 @@
 // Reihenfolge = Icon-ID und steckt in gespeicherten Vorlagen -> nicht umsortieren.
 #include "icons.h"
 #include "gen/font_ui.h"
+#include "lang.h"
 #include "gen/icons_data.h"
 
-struct IconDef { const char *name; const char *abbrev; };
+struct IconDef { const char *de; const char *en; const char *abbrev; };
 
 static const IconDef ICONS[ICON_COUNT] = {
-  { "Pasta", "PA" },  { "Ei", "EI" },
-  { "Hefezopf", "HE" },  { "Reis", "RE" },
-  { "Kartoffeln", "KA" },  { "Gemüse", "GE" },
-  { "Brokkoli", "BR" },  { "Spargel", "SP" },
-  { "Suppe", "SU" },  { "Kochtopf", "KO" },
-  { "Kochen", "KO" },  { "Braten", "BR" },
-  { "Bratpfanne", "BR" },  { "Teig", "TE" },
-  { "Gehen lassen", "GL" },  { "Brot", "BR" },
-  { "Kuchen", "KU" },  { "Kekse", "KE" },
-  { "Eintopf", "EI" },  { "Steak", "ST" },
-  { "Filet", "FI" },  { "Hähnchen", "HA" },
-  { "Kotelett", "KO" },  { "Schnitzel", "SC" },
-  { "Fisch", "FI" },  { "Garnelen", "GA" },
-  { "Eieruhr", "EI" },  { "Wecker", "WE" },
-  { "Milchtopf", "MI" },  { "Wasserkessel", "WA" },
-  { "Espresso", "ES" },  { "Einmachglas", "EI" },
-  { "Dampfgarer", "DA" },
+  { "Pasta", "Pasta", "PA" },
+  { "Ei", "Egg", "EI" },
+  { "Hefezopf", "Sweet loaf", "HE" },
+  { "Reis", "Rice", "RE" },
+  { "Kartoffeln", "Potatoes", "KA" },
+  { "Gemüse", "Vegetables", "GE" },
+  { "Brokkoli", "Broccoli", "BR" },
+  { "Spargel", "Asparagus", "SP" },
+  { "Suppe", "Soup", "SU" },
+  { "Kochtopf", "Pot", "KO" },
+  { "Kochen", "Boiling", "KO" },
+  { "Braten", "Roast", "BR" },
+  { "Bratpfanne", "Frying pan", "BR" },
+  { "Teig", "Dough", "TE" },
+  { "Gehen lassen", "Proving", "GL" },
+  { "Brot", "Bread", "BR" },
+  { "Kuchen", "Cake", "KU" },
+  { "Kekse", "Cookies", "KE" },
+  { "Eintopf", "Stew", "EI" },
+  { "Steak", "Steak", "ST" },
+  { "Filet", "Fillet", "FI" },
+  { "Hähnchen", "Chicken", "HA" },
+  { "Kotelett", "Chop", "KO" },
+  { "Schnitzel", "Cutlet", "SC" },
+  { "Fisch", "Fish", "FI" },
+  { "Garnelen", "Prawns", "GA" },
+  { "Eieruhr", "Egg timer", "EI" },
+  { "Wecker", "Timer", "WE" },
+  { "Milchtopf", "Milk pan", "MI" },
+  { "Wasserkessel", "Kettle", "WA" },
+  { "Espresso", "Espresso", "ES" },
+  { "Einmachglas", "Jar", "EI" },
+  { "Dampfgarer", "Steamer", "DA" },
 };
 
 // Bilddaten: src/gen/icons_data.c, erzeugt aus assets/icons/ per tools/convert_icons.py
 #define ICONS_GROSS ICON_IMG_64
 #define ICONS_KLEIN ICON_IMG_36
 
-const char *icon_name(uint8_t id)   { return ICONS[id % ICON_COUNT].name; }
+const char *icon_name(uint8_t id) {
+  const IconDef &d = ICONS[id % ICON_COUNT];
+  return lang_get() == LANG_EN ? d.en : d.de;
+}
 const char *icon_abbrev(uint8_t id) { return ICONS[id % ICON_COUNT].abbrev; }
 
 lv_obj_t *icon_create(lv_obj_t *parent, int size) {

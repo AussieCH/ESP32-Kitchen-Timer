@@ -3,6 +3,7 @@
 // 10er-Schritten, sonst dauert eine Dreiviertelstunde ewig.
 #include <Arduino.h>
 #include "ui.h"
+#include "lang.h"
 #include "haptics.h"
 #include "audio.h"
 #include "melodies.h"
@@ -14,7 +15,7 @@
 #define F_MELODY 4
 
 static lv_obj_t *s_lbl[3], *s_sep[2], *s_row;
-static lv_obj_t *s_btn_icon, *s_icon_prev, *s_btn_start;
+static lv_obj_t *s_btn_icon, *s_icon_prev, *s_btn_start, *s_title;
 static lv_obj_t *s_btn_mel;
 static int s_val[3] = { 0, 5, 0 };
 static int s_focus = F_M;
@@ -59,11 +60,11 @@ static void mel_cb(lv_event_t *) {
 
 static void start_cb(lv_event_t *) {
   uint32_t total = s_val[F_H] * 3600UL + s_val[F_M] * 60UL + s_val[F_S];
-  if (total == 0) { ui_toast("Zeit einstellen"); return; }
+  if (total == 0) { ui_toast(T(T_SET_TIME)); return; }
 
   audio_stop();
   int idx = timer_start(total, s_icon, s_melody);
-  if (idx < 0) { ui_toast("Zu viele Timer"); return; }
+  if (idx < 0) { ui_toast(T(T_TOO_MANY)); return; }
 
   if (s_edit_preset >= 0) { preset_replace(s_edit_preset, total, s_icon, s_melody); s_edit_preset = -1; }
   else                     preset_remember(total, s_icon, s_melody);
@@ -73,7 +74,7 @@ static void start_cb(lv_event_t *) {
   haptic_bump();
   ui_goto(TILE_ACTIVE);
   ui_active_update();
-  ui_toast("Timer gestartet");
+  ui_toast(T(T_TIMER_STARTED));
 }
 
 static void cancel_cb(lv_event_t *) {
@@ -83,11 +84,10 @@ static void cancel_cb(lv_event_t *) {
 }
 
 void ui_new_create(lv_obj_t *p) {
-  lv_obj_t *title = lv_label_create(p);
-  lv_label_set_text(title, "Neuer Timer");
-  lv_obj_set_style_text_font(title, &font_ui_14, 0);
-  lv_obj_set_style_text_color(title, col_dim(), 0);
-  lv_obj_align(title, LV_ALIGN_CENTER, 0, -142);
+  s_title = lv_label_create(p);
+  lv_obj_set_style_text_font(s_title, &font_ui_14, 0);
+  lv_obj_set_style_text_color(s_title, col_dim(), 0);
+  lv_obj_align(s_title, LV_ALIGN_CENTER, 0, -142);
 
   s_row = lv_obj_create(p);
   lv_obj_set_size(s_row, 300, 70);
@@ -143,7 +143,7 @@ void ui_new_create(lv_obj_t *p) {
   lv_obj_set_width(il, 92);
   lv_obj_align(il, LV_ALIGN_RIGHT_MID, -4, 0);
 
-  s_btn_start = make_button(p, LV_SYMBOL_PLAY " Start", 168, 54, start_cb, nullptr);
+  s_btn_start = make_button(p, "", 168, 54, start_cb, nullptr);
   lv_obj_align(s_btn_start, LV_ALIGN_CENTER, -30, 104);
   button_set_color(s_btn_start, lv_palette_main(LV_PALETTE_AMBER));
 
@@ -156,12 +156,14 @@ void ui_new_create(lv_obj_t *p) {
 int ui_new_focus() { return s_focus; }
 
 void ui_new_update() {
+  lv_label_set_text(s_title, T(T_NEW_TIMER));
+  button_set_text(s_btn_start, lang_btn(LV_SYMBOL_PLAY, T_START));
   lv_label_set_text_fmt(s_lbl[F_H], "%02d", s_val[F_H]);
   lv_label_set_text_fmt(s_lbl[F_M], "%02d", s_val[F_M]);
   lv_label_set_text_fmt(s_lbl[F_S], "%02d", s_val[F_S]);
 
   button_set_text(s_btn_icon, icon_name(s_icon));
-  char mel[24]; snprintf(mel, sizeof(mel), LV_SYMBOL_AUDIO " %s", MELODIES[s_melody].name);
+  char mel[24]; snprintf(mel, sizeof(mel), LV_SYMBOL_AUDIO " %s", melody_name(&MELODIES[s_melody]));
   button_set_text(s_btn_mel, mel);
   icon_set(s_icon_prev, s_icon, lv_color_white());
   refresh_focus();

@@ -12,6 +12,7 @@
 // Haptik, LED-Ring und Melodie laufen im selben Takt mit.
 #include <Arduino.h>
 #include "ui.h"
+#include "lang.h"
 #include "haptics.h"
 #include "audio.h"
 #include "leds.h"
@@ -84,7 +85,7 @@ static void del_yes(void *) {
   for (int i = 0; i < active_count(); i++)
     if (active_at(i)->id == s_pending_id) { timer_delete(i); break; }
   s_paint_sig = 0xFFFFFFFF;
-  ui_toast("Timer gelöscht");
+  ui_toast(T(T_TIMER_DELETED));
   ui_active_update();
 }
 
@@ -92,7 +93,7 @@ static void del_cb(lv_event_t *) {
   int i = sel_timer_index();
   if (i < 0) return;
   s_pending_id = active_at(i)->id;
-  ui_confirm("Timer löschen?", del_yes, nullptr);
+  ui_confirm(T(T_Q_DELETE_TIMER), del_yes, nullptr);
 }
 
 static void stop_alarm(int idx) {
@@ -122,10 +123,10 @@ static void plus_cb(lv_event_t *) {
   if (t->ringing || t->expired) {          // aus dem Alarm heraus verlaengern
     timer_snooze(i, 5 * 60);
     flash_stop();
-    ui_toast("+5 Minuten");
+    ui_toast(T(T_PLUS5_MSG));
   } else {
     timer_add_seconds(i, 60);
-    ui_toast("+1 Minute");
+    ui_toast(T(T_PLUS1_MSG));
   }
   s_paint_sig = 0xFFFFFFFF;
   ui_active_update();
@@ -181,10 +182,10 @@ void ui_active_create(lv_obj_t *p) {
   lv_obj_set_style_text_color(s_sub, col_dim(), 0);
   lv_obj_align(s_sub, LV_ALIGN_CENTER, 0, 52);
 
-  s_btn_pause = make_button(p, LV_SYMBOL_PAUSE " Pause", 112, 54, pause_cb, nullptr);
+  s_btn_pause = make_button(p, "", 112, 54, pause_cb, nullptr);
   lv_obj_align(s_btn_pause, LV_ALIGN_CENTER, -60, 99);
 
-  s_btn_plus = make_button(p, "+1 Min", 112, 54, plus_cb, nullptr);
+  s_btn_plus = make_button(p, "", 112, 54, plus_cb, nullptr);
   lv_obj_align(s_btn_plus, LV_ALIGN_CENTER, 60, 99);
 
   s_idx = lv_label_create(p);
@@ -252,14 +253,17 @@ static void show_stopwatch(int pos, int n) {
   lv_label_set_text(s_time, buf);
   lv_obj_set_style_text_color(s_time, lv_color_white(), 0);
 
-  lv_label_set_text(s_sub, ui_stopwatch_running() ? "Stoppuhr" : "Stoppuhr  -  pausiert");
+  char sub[48];
+  snprintf(sub, sizeof(sub), ui_stopwatch_running() ? "%s" : "%s  -  %s",
+           T(T_STOPWATCH), T(T_STOPWATCH), T(T_PAUSED));
+  lv_label_set_text(s_sub, sub);
   lv_label_set_text_fmt(s_idx, n > 1 ? "%d / %d" : "", pos + 1, n);
 
-  button_set_text(s_btn_pause, ui_stopwatch_running() ? LV_SYMBOL_PAUSE " Pause"
-                                                      : LV_SYMBOL_PLAY " Weiter");
+  button_set_text(s_btn_pause, lang_btn(ui_stopwatch_running() ? LV_SYMBOL_PAUSE : LV_SYMBOL_PLAY,
+                                       ui_stopwatch_running() ? T_PAUSE : T_RESUME));
   lv_obj_set_style_bg_color(s_btn_pause, lv_color_hex(0x272B33), 0);
   lv_obj_set_style_text_color(lv_obj_get_child(s_btn_pause, 0), lv_color_white(), 0);
-  button_set_text(s_btn_plus, "Zurück");
+  button_set_text(s_btn_plus, T(T_RESET));
 }
 
 void ui_active_update() {
@@ -319,21 +323,22 @@ void ui_active_update() {
   lv_label_set_text_fmt(s_idx, n > 1 ? "%d / %d" : "", pos + 1, n);
 
   char tot[16]; fmt_time(tot, sizeof(tot), t->total_s);
-  if (alarm)          lv_label_set_text_fmt(s_sub, "%s abgelaufen", icon_name(t->icon));
-  else if (t->paused) lv_label_set_text_fmt(s_sub, "pausiert  -  %s  %s", tot, icon_name(t->icon));
+  if (alarm)          lv_label_set_text_fmt(s_sub, "%s %s", icon_name(t->icon), T(T_EXPIRED));
+  else if (t->paused) lv_label_set_text_fmt(s_sub, "%s  -  %s  %s", T(T_PAUSED), tot, icon_name(t->icon));
   else                lv_label_set_text_fmt(s_sub, "%s  %s", tot, icon_name(t->icon));
 
   if (alarm) {
-    button_set_text(s_btn_pause, LV_SYMBOL_STOP " Stopp");
+    button_set_text(s_btn_pause, lang_btn(LV_SYMBOL_STOP, T_STOP));
     button_set_color(s_btn_pause, c);
-    button_set_text(s_btn_plus, "+5 Min");
+    button_set_text(s_btn_plus, T(T_PLUS5));
     lv_obj_clear_flag(s_stop_area, LV_OBJ_FLAG_HIDDEN);
     lv_obj_move_foreground(s_stop_area);
   } else {
-    button_set_text(s_btn_pause, t->paused ? LV_SYMBOL_PLAY " Weiter" : LV_SYMBOL_PAUSE " Pause");
+    button_set_text(s_btn_pause, lang_btn(t->paused ? LV_SYMBOL_PLAY : LV_SYMBOL_PAUSE,
+                                        t->paused ? T_RESUME : T_PAUSE));
     lv_obj_set_style_bg_color(s_btn_pause, lv_color_hex(0x272B33), 0);
     lv_obj_set_style_text_color(lv_obj_get_child(s_btn_pause, 0), lv_color_white(), 0);
-    button_set_text(s_btn_plus, "+1 Min");
+    button_set_text(s_btn_plus, T(T_PLUS1));
     lv_obj_add_flag(s_stop_area, LV_OBJ_FLAG_HIDDEN);
   }
   lv_obj_clear_state(s_btn_pause, LV_STATE_DISABLED);

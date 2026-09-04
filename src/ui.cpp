@@ -6,6 +6,7 @@
 //   vertikal wischen  = innerhalb einer Liste blaettern
 #include <Arduino.h>
 #include "ui.h"
+#include "lang.h"
 #include "haptics.h"
 #include "alarm.h"
 
@@ -127,11 +128,11 @@ void ui_confirm(const char *question, ui_yes_cb_t yes_cb, void *user) {
   lv_obj_set_width(l, 240);
   lv_obj_align(l, LV_ALIGN_CENTER, 0, -40);
 
-  lv_obj_t *yes = make_button(s_confirm, "Ja", 110, 56, confirm_yes_cb, nullptr);
+  lv_obj_t *yes = make_button(s_confirm, T(T_YES), 110, 56, confirm_yes_cb, nullptr);
   lv_obj_align(yes, LV_ALIGN_CENTER, -60, 60);
   button_set_color(yes, lv_palette_main(LV_PALETTE_RED));
 
-  lv_obj_t *no = make_button(s_confirm, "Nein", 110, 56, confirm_no_cb, nullptr);
+  lv_obj_t *no = make_button(s_confirm, T(T_NO), 110, 56, confirm_no_cb, nullptr);
   lv_obj_align(no, LV_ALIGN_CENTER, 60, 60);
 }
 

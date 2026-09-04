@@ -1,5 +1,6 @@
 // Notentabellen. Frequenzen in Hz, Dauer in ms. Quelle: Toene.txt.
 #include "melodies.h"
+#include "lang.h"
 
 #define G3  196
 #define C4  262
@@ -56,18 +57,22 @@ static const Note m18[] = { {C5,250},{E5,250},{G5,250},{C6,400},{REST,200},{G5,2
 static const Note m19[] = { {G5,500},{E5,700},{C5,500},{REST,300},{G5,500},{E5,700},{C5,500} };
 static const Note m20[] = { {C5,300},{E5,300},{G5,300},{C6,500},{REST,200},{C5,300},{E5,300},{G5,300},{C6,700} };
 
-#define M(n, tab) { n, tab, (uint16_t)(sizeof(tab) / sizeof(Note)) }
+#define M(de, en, tab) { de, en, tab, (uint16_t)(sizeof(tab) / sizeof(Note)) }
 
 const Melody MELODIES[] = {
-  M("Geburtstag",    m01),  M("Bruder Jakob",  m02),  M("Entchen",       m03),
-  M("Jingle Bells",  m04),  M("Ode Freude",    m05),  M("Hänschen",     m06),
-  M("London Bridge", m07),  M("Saints",        m08),  M("Au clair",      m09),
-  M("Für Elise",    m10),  M("Nachtmusik",    m11),  M("Morgen",        m12),
-  M("Türk. Marsch", m13),  M("Habanera",      m14),  M("Westminster",   m15),
-  M("Gran Vals",     m16),  M("Tetris",        m17),  M("Game Start",    m18),
-  M("Türgong",      m19),  M("Alarm",         m20),
+  M("Geburtstag", "Birthday",    m01),  M("Bruder Jakob", "Brother John",  m02),  M("Entchen", "Little Ducks",       m03),
+  M("Jingle Bells", "Jingle Bells",  m04),  M("Ode Freude", "Ode to Joy",    m05),  M("Hänschen", "Little Hans",     m06),
+  M("London Bridge", "London Bridge", m07),  M("Saints", "Saints",        m08),  M("Au clair", "Au clair",      m09),
+  M("Für Elise", "Für Elise",    m10),  M("Nachtmusik", "Night Music",    m11),  M("Morgen", "Morning Mood",        m12),
+  M("Türk. Marsch", "Turkish March", m13),  M("Habanera", "Habanera",      m14),  M("Westminster", "Westminster",   m15),
+  M("Gran Vals", "Gran Vals",     m16),  M("Tetris", "Tetris",        m17),  M("Game Start", "Game Start",    m18),
+  M("Türgong", "Doorbell",      m19),  M("Alarm", "Alarm",         m20),
 };
 const int MELODY_COUNT = sizeof(MELODIES) / sizeof(MELODIES[0]);
 
 static const Note m_test[] = { {C5,120},{E5,120},{G5,220} };
-const Melody MELODY_TEST = M("Test", m_test);
+const Melody MELODY_TEST = M("Test", "Test", m_test);
+
+const char *melody_name(const Melody *m) {
+  return lang_get() == LANG_EN ? m->en : m->de;
+}

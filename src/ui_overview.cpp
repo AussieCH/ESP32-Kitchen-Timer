@@ -3,9 +3,10 @@
 // bei mehreren Timern nicht mehr durchblaettern, um zu sehen, was laeuft.
 #include <Arduino.h>
 #include "ui.h"
+#include "lang.h"
 #include "haptics.h"
 
-static lv_obj_t *s_list, *s_empty;
+static lv_obj_t *s_list, *s_empty, *s_title;
 static lv_obj_t *s_rows[MAX_ACTIVE];
 static lv_obj_t *s_time_lbl[MAX_ACTIVE];
 static uint32_t s_ids[MAX_ACTIVE];
@@ -31,7 +32,7 @@ static void mark_selection() {
 
 static uint32_t signature() {
   uint32_t s = (uint32_t)active_count() * 2654435761u
-             + (ui_stopwatch_running() ? 77771u : 0u);
+             + (ui_stopwatch_running() ? 77771u : 0u) + lang_rev() * 7919u;
   for (int i = 0; i < active_count(); i++) {
     ActiveTimer *t = active_at(i);
     s ^= (t->id * 31u + t->icon * 7u + (t->paused ? 3u : 0u)
@@ -80,8 +81,8 @@ static void rebuild() {
     lv_obj_align(s_time_lbl[i], LV_ALIGN_LEFT_MID, 50, 0);
 
     lv_obj_t *nl = lv_label_create(row);
-    lv_label_set_text(nl, is_sw ? (ui_stopwatch_running() ? "Stoppuhr" : "pausiert")
-                                : (t->paused ? "pausiert" : (alarm ? "fertig" : icon_name(t->icon))));
+    lv_label_set_text(nl, is_sw ? (ui_stopwatch_running() ? T(T_STOPWATCH) : T(T_PAUSED))
+                                : (t->paused ? T(T_PAUSED) : (alarm ? T(T_DONE) : icon_name(t->icon))));
     lv_obj_set_style_text_font(nl, &font_ui_14, 0);
     lv_obj_set_style_text_color(nl, col_dim(), 0);
     lv_label_set_long_mode(nl, LV_LABEL_LONG_DOT);
@@ -98,11 +99,10 @@ static void rebuild() {
 }
 
 void ui_overview_create(lv_obj_t *p) {
-  lv_obj_t *title = lv_label_create(p);
-  lv_label_set_text(title, "Läuft gerade");
-  lv_obj_set_style_text_font(title, &font_ui_14, 0);
-  lv_obj_set_style_text_color(title, col_dim(), 0);
-  lv_obj_align(title, LV_ALIGN_CENTER, 0, -150);
+  s_title = lv_label_create(p);
+  lv_obj_set_style_text_font(s_title, &font_ui_14, 0);
+  lv_obj_set_style_text_color(s_title, col_dim(), 0);
+  lv_obj_align(s_title, LV_ALIGN_CENTER, 0, -150);
 
   s_list = lv_obj_create(p);
   lv_obj_set_size(s_list, 252, 220);
@@ -117,13 +117,15 @@ void ui_overview_create(lv_obj_t *p) {
   lv_obj_set_scrollbar_mode(s_list, LV_SCROLLBAR_MODE_OFF);
 
   s_empty = lv_label_create(p);
-  lv_label_set_text(s_empty, "Kein Timer läuft");
+
   lv_obj_set_style_text_font(s_empty, &font_ui_20, 0);
   lv_obj_set_style_text_color(s_empty, col_dim(), 0);
   lv_obj_align(s_empty, LV_ALIGN_CENTER, 0, 0);
 }
 
 void ui_overview_update() {
+  lv_label_set_text(s_title, T(T_OVERVIEW));      // Sprache kann sich geaendert haben
+  lv_label_set_text(s_empty, T(T_NO_TIMER));
   uint32_t sig = signature();
   if (sig != s_sig) { s_sig = sig; rebuild(); }
 

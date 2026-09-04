@@ -3,9 +3,10 @@
 // schlafen geht - die Zeit haengt an derselben monotonen Basis wie die Timer.
 #include <Arduino.h>
 #include "ui.h"
+#include "lang.h"
 #include "haptics.h"
 
-static lv_obj_t *s_big, *s_tenth, *s_btn_run, *s_btn_reset, *s_hint;
+static lv_obj_t *s_big, *s_tenth, *s_btn_run, *s_btn_reset, *s_hint, *s_title;
 static lv_timer_t *s_fast = nullptr;
 
 static bool s_running = false;
@@ -61,11 +62,10 @@ static void run_cb(lv_event_t *)   { ui_stopwatch_toggle(); }
 static void reset_cb(lv_event_t *) { ui_stopwatch_reset(); }
 
 void ui_stopwatch_create(lv_obj_t *p) {
-  lv_obj_t *title = lv_label_create(p);
-  lv_label_set_text(title, "Stoppuhr");
-  lv_obj_set_style_text_font(title, &font_ui_14, 0);
-  lv_obj_set_style_text_color(title, col_dim(), 0);
-  lv_obj_align(title, LV_ALIGN_CENTER, 0, -150);
+  s_title = lv_label_create(p);
+  lv_obj_set_style_text_font(s_title, &font_ui_14, 0);
+  lv_obj_set_style_text_color(s_title, col_dim(), 0);
+  lv_obj_align(s_title, LV_ALIGN_CENTER, 0, -150);
 
   s_big = lv_label_create(p);
   lv_obj_set_style_text_font(s_big, &font_time_92, 0);
@@ -76,10 +76,10 @@ void ui_stopwatch_create(lv_obj_t *p) {
   lv_obj_set_style_text_color(s_tenth, lv_palette_main(LV_PALETTE_AMBER), 0);
   lv_obj_align(s_tenth, LV_ALIGN_CENTER, 0, 30);
 
-  s_btn_run = make_button(p, LV_SYMBOL_PLAY " Start", 112, 54, run_cb, nullptr);
+  s_btn_run = make_button(p, "", 112, 54, run_cb, nullptr);
   lv_obj_align(s_btn_run, LV_ALIGN_CENTER, -60, 99);
 
-  s_btn_reset = make_button(p, "Zurück", 112, 54, reset_cb, nullptr);
+  s_btn_reset = make_button(p, "", 112, 54, reset_cb, nullptr);
   lv_obj_align(s_btn_reset, LV_ALIGN_CENTER, 60, 99);
 
   s_hint = lv_label_create(p);
@@ -93,7 +93,12 @@ void ui_stopwatch_create(lv_obj_t *p) {
 }
 
 void ui_stopwatch_update() {
-  button_set_text(s_btn_run, s_running ? LV_SYMBOL_PAUSE " Pause" : LV_SYMBOL_PLAY " Start");
+  lv_label_set_text(s_title, T(T_STOPWATCH));
+  button_set_text(s_btn_reset, T(T_RESET));
+  char b[40];
+  snprintf(b, sizeof(b), "%s%s", s_running ? LV_SYMBOL_PAUSE : LV_SYMBOL_PLAY,
+           s_running ? T(T_PAUSE) : T(T_START));
+  button_set_text(s_btn_run, b);
   if (s_running) button_set_color(s_btn_run, lv_palette_main(LV_PALETTE_AMBER));
   else {
     lv_obj_set_style_bg_color(s_btn_run, lv_color_hex(0x272B33), 0);
@@ -101,7 +106,7 @@ void ui_stopwatch_update() {
   }
   if (s_running || elapsed_ms()) lv_obj_clear_state(s_btn_reset, LV_STATE_DISABLED);
   else                           lv_obj_add_state(s_btn_reset, LV_STATE_DISABLED);
-  lv_label_set_text(s_hint, s_running ? "läuft im Hintergrund weiter" : "");
+  lv_label_set_text(s_hint, s_running ? T(T_BG_RUNNING) : "");
   paint(true);
 }
 
