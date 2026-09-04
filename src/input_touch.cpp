@@ -54,6 +54,12 @@ bool touch_read(int16_t *x, int16_t *y) {
 #if TP_MIRROR_Y
   py = 359 - py;
 #endif
+#if DISPLAY_ROTATE_180
+  // Der Touchcontroller weiss nichts von lcd.setRotation() - er liefert immer
+  // Rohkoordinaten des Glases. Also hier mitdrehen, sonst tippt man spiegel-
+  // verkehrt zum Bild.
+  px = 359 - px; py = 359 - py;
+#endif
   if (px < 0) px = 0; if (px > 359) px = 359;
   if (py < 0) py = 0; if (py > 359) py = 359;
   *x = px; *y = py;

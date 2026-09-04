@@ -102,7 +102,7 @@ void setup() {
   Serial.printf("\n[boot] Küchentimer auf %s\n", BOARD_NAME);
 
   lcd.init();
-  lcd.setRotation(0);
+  lcd.setRotation(DISPLAY_ROTATE_180 ? 2 : 0);   // 2 = USB-Buchse unten
   lcd.setBrightness(0);
   lcd.fillScreen(TFT_BLACK);
 

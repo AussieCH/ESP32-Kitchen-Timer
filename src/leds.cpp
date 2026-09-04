@@ -18,6 +18,13 @@
 static Adafruit_NeoPixel s_ring(LED_RING_COUNT, LED_RING_PIN, NEO_GRB + NEO_KHZ800);
 static bool s_on = false;
 
+// Logischer Platz am Ring (0 = oben auf dem Bild) -> physische LED. Bei
+// gedrehtem Einbau liegt die LED, die frueher oben sass, jetzt unten; ohne
+// diesen Versatz begaenne der Bogen dem Bild gegenueber.
+static inline int pix(int i) {
+  return (i + LED_RING_ROT) % LED_RING_COUNT;
+}
+
 void leds_init() {
   s_ring.begin();
   s_ring.setBrightness(RING_IDLE_BRIGHT);
@@ -42,12 +49,12 @@ void leds_progress(uint32_t rgb, float frac) {
   float lit = frac * LED_RING_COUNT;          // wieviele LEDs die Restzeit fuellt
   for (int i = 0; i < LED_RING_COUNT; i++) {
     float part = lit - i;                     // 1 = ganz an, 0..1 = anteilig
-    if (part <= 0) { s_ring.setPixelColor(i, 0); continue; }
+    if (part <= 0) { s_ring.setPixelColor(pix(i), 0); continue; }
     if (part > 1) part = 1;
     uint8_t r = (uint8_t)(((rgb >> 16) & 0xFF) * part);
     uint8_t g = (uint8_t)(((rgb >> 8)  & 0xFF) * part);
     uint8_t b = (uint8_t)(( rgb        & 0xFF) * part);
-    s_ring.setPixelColor(i, r, g, b);
+    s_ring.setPixelColor(pix(i), r, g, b);
   }
   s_ring.show();
   s_on = true;
@@ -69,8 +76,9 @@ void leds_timer(uint32_t rgb, float frac, uint32_t rest_s) {
 
 void leds_single(int idx, uint32_t rgb) {
   s_ring.setBrightness(RING_MAX_BRIGHT);
+  int want = pix(idx % LED_RING_COUNT);
   for (int i = 0; i < LED_RING_COUNT; i++)
-    s_ring.setPixelColor(i, i == (idx % LED_RING_COUNT) ? rgb : 0);
+    s_ring.setPixelColor(i, i == want ? rgb : 0);
   s_ring.show();
   s_on = true;
 }

@@ -50,6 +50,22 @@
 // ---- Sonstiges ------------------------------------------------------------
 #define BATT_ADC        6   // Teiler ~10k/10k -> x2, Prozentkurve ist Heuristik
 
+// ---- Einbaulage -----------------------------------------------------------
+// 1 = Bild um 180 Grad gedreht, damit die USB-Buchse unten liegt (Ladedock).
+// Mitgedreht werden Bild, Beruehrung und LED-Ring. Der Drehring NICHT: man
+// schaut weiterhin von vorn auf das Geraet, im Uhrzeigersinn bleibt im
+// Uhrzeigersinn.
+#define DISPLAY_ROTATE_180  1
+
+// Der Ring hat 13 LEDs - eine ungerade Zahl. 180 Grad sind also 6.5 LEDs, ein
+// halber Schritt (knapp 14 Grad) Versatz bleibt uebrig. Bei 7 beginnt der
+// Bogen eher zu frueh als zu spaet, das faellt weniger auf als ein Nachlaufen.
+#if DISPLAY_ROTATE_180
+  #define LED_RING_ROT   7
+#else
+  #define LED_RING_ROT   0
+#endif
+
 // ---- Touch-Kalibrierung (am Geraet einmal verifizieren) -------------------
 #define TP_SWAP_XY      0
 #define TP_MIRROR_X     0

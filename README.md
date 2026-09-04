@@ -205,6 +205,14 @@ begrenzt ist nur die Anwendung, die heute genau einen Fühler führt.
   ist Absicht: RONDO ist für jemanden gebaut, der seine Temperaturen kennt und
   keinen Assistenten braucht, sondern eine Zahl und einen Alarm. Verbunden wird
   mit der Ladeschale (dem Verstärker), nicht mit dem Fühler direkt.
+* **Einbaulage.** `DISPLAY_ROTATE_180` in `src/board_pins.h` dreht das Bild um
+  180°, damit die USB-Buchse unten liegt (Ladedock). Mitgedreht werden Bild
+  (`lcd.setRotation(2)`), die Berührung — der Touchcontroller liefert immer
+  Rohkoordinaten des Glases und weiss nichts von der Rotation — und der
+  LED-Ring. Der **Drehring nicht**: man schaut weiterhin von vorn auf das
+  Gerät, im Uhrzeigersinn bleibt im Uhrzeigersinn. Der Ring hat 13 LEDs, eine
+  ungerade Zahl; 180° sind 6.5 davon, ein halber Schritt (knapp 14°) Versatz
+  bleibt also übrig (`LED_RING_ROT`).
 * **Zeichenpuffer: 2 × 20 Bildzeilen** statt 40. Das macht 29 KB internen RAM
   frei (53 → 82 KB frei, grösster zusammenhängender Block 30 → 41 KB) und kostet
   gemessen ein Drittel mehr Zeit je Vollbild (42 → 56 ms, weil LVGL 16 statt 10
@@ -531,6 +539,14 @@ exactly one probe.
   RONDO is built for someone who knows their temperatures and does not need an
   assistant, just a number and an alarm. The connection goes to the charging
   case (the repeater), not to the probe directly.
+* **Mounting orientation.** `DISPLAY_ROTATE_180` in `src/board_pins.h` turns
+  the image by 180° so the USB socket sits at the bottom (charging dock). Image
+  (`lcd.setRotation(2)`), touch — the touch controller always reports raw glass
+  coordinates and knows nothing about the rotation — and the LED ring all turn
+  with it. The **rotary ring does not**: you still face the front of the
+  device, so clockwise stays clockwise. The ring has 13 LEDs, an odd number;
+  180° is 6.5 of them, so half a step (just under 14°) of offset remains
+  (`LED_RING_ROT`).
 * **Drawing buffers: 2 × 20 display lines** instead of 40. That frees 29 KB of
   internal RAM (53 → 82 KB free, largest contiguous block 30 → 41 KB) and costs
   a measured third more time per full frame (42 → 56 ms, because LVGL needs 16
