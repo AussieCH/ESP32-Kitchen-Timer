@@ -10,7 +10,9 @@
   Kein WLAN, kein Konto, keine App — alles läuft lokal auf dem Gerät.
 </p>
 
-<p align="center"><b>Deutsch</b> · <a href="#english">English</a></p>
+<p align="center">
+  <b>Deutsch</b> · <a href="#english"><b>English version below ↓</b></a>
+</p>
 
 <p align="center">
   <img src="docs/img/aktiv.png" width="150" alt="Laufender Timer">
@@ -334,7 +336,9 @@ offengelegte Bluetooth-Protokoll.</sub>
   No Wi-Fi, no account, no app — everything runs locally on the device.
 </p>
 
-<p align="center"><a href="#deutsch">Deutsch</a> · <b>English</b></p>
+<p align="center">
+  <a href="#deutsch">↑ Deutsche Fassung oben</a> · <b>English</b>
+</p>
 
 <p align="center">
   <img src="docs/img/en/aktiv.png" width="150" alt="Running timer">
