@@ -65,6 +65,11 @@ zu schrauben.
 Dazu gehört `DISPLAY_ROTATE_180` (siehe unten): erst mit der gedrehten Anzeige
 steht das Bild richtig herum, wenn die Buchse unten liegt.
 
+Die Schale ist ein **Ladedock**, kein Gehäuse — das Gerät wird einfach
+herausgenommen. Das **BOOT-Pinhole ist im Dock nicht erreichbar**; zum Flashen
+also erst herausnehmen. Im Alltag stört das nicht, denn es wird nur für den
+Download-Modus gebraucht.
+
 ## Bedienung
 
 Eine Regel, überall gleich:
@@ -246,6 +251,8 @@ pio run -t upload --upload-port /dev/cu.usbmodemXXXX
 
 Der erste Flash **muss über USB** laufen (16 MB, eigene Partitionstabelle).
 
+Steckt das Gerät im Ladedock, muss es zum Flashen heraus — das BOOT-Pinhole liegt dort verdeckt.
+
 Ohne Zutun taucht kein serieller Port auf — die Werksfirmware meldet sich als
 `ESP USB DEVICE` (PID `0x4001`). Für den Download-Modus: **Strom ganz weg**,
 Büroklammer ins **BOOT-Pinhole links neben USB-C**, drücken und halten, *dann*
@@ -414,6 +421,11 @@ unscrewing anything.
 
 It belongs with `DISPLAY_ROTATE_180` (see below): only with the rotated display
 is the image the right way up while the socket sits at the bottom.
+
+The cradle is a **charging dock, not an enclosure** — the device simply lifts
+out. The **BOOT pinhole cannot be reached while docked**, so take the device out
+before flashing. That is no bother day to day: the pinhole is only needed for
+download mode.
 
 ## Using it
 
@@ -595,6 +607,8 @@ pio run -t upload --upload-port /dev/cu.usbmodemXXXX
 ```
 
 The first flash **must go over USB** (16 MB, custom partition table).
+
+If the device is sitting in its charging dock, take it out before flashing — the BOOT pinhole is covered in there.
 
 Left alone, no serial port appears — the factory firmware enumerates as
 `ESP USB DEVICE` (PID `0x4001`). For download mode: **cut power completely**,
