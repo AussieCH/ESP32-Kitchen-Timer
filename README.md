@@ -50,6 +50,21 @@ bestückt**, obwohl weder das Herstellerdemo noch verbreitete Pinouts ihn
 führen. Die Firmware scannt deshalb beim Start den I²C-Bus und schreibt ins
 Log, was sie findet.
 
+## Halterung
+
+<p align="center">
+  <img src="assets/3d_print/Halter.png" width="330" alt="Halterung, gerendert">
+</p>
+
+Eine Schale zum Selberdrucken liegt als
+[STL](assets/3d_print/Halter.stl) bei: 71 × 34 × 74 mm, das Gerät sitzt aufrecht
+darin, das USB-C-Kabel kommt **von unten** durch den seitlichen Kanal. Zwei
+Schlüssellöcher auf der Rückseite hängen sie an zwei Schrauben — abnehmen, ohne
+zu schrauben.
+
+Dazu gehört `DISPLAY_ROTATE_180` (siehe unten): erst mit der gedrehten Anzeige
+steht das Bild richtig herum, wenn die Buchse unten liegt.
+
 ## Bedienung
 
 Eine Regel, überall gleich:
@@ -320,6 +335,7 @@ src/ui_splash.cpp    RONDO-Startbild
 src/ui*.cpp          Rahmen, sieben Screens, Alarmzustand im Aktiv-Screen
 src/gen/             erzeugt: Ziffernfonts (Rubik 92/52/30) + Icon-Bilddaten
 assets/icons/        33 Quell-PNGs, Dateiname = ID und Anzeigename
+assets/3d_print/     STL der Halterung (USB-C unten) samt Rendering
 tools/sim/           Host-Simulator + Layout- und Heappruefung
 ```
 
@@ -383,6 +399,21 @@ file.**
 One quirk no source mentions: the **DRV2605 at `0x5A` is populated**, even
 though neither the vendor demo nor the pinouts in circulation list it. That is
 why the firmware scans the I²C bus at boot and logs whatever it finds.
+
+## Holder
+
+<p align="center">
+  <img src="assets/3d_print/Halter.png" width="330" alt="Holder, rendered">
+</p>
+
+A cradle to print yourself is included as an
+[STL](assets/3d_print/Halter.stl): 71 × 34 × 74 mm, the device sits upright in
+it and the USB-C cable comes in **from below** through the channel at the side.
+Two keyhole slots on the back hang it on a pair of screws — lift it off without
+unscrewing anything.
+
+It belongs with `DISPLAY_ROTATE_180` (see below): only with the rotated display
+is the image the right way up while the socket sits at the bottom.
 
 ## Using it
 
@@ -660,6 +691,7 @@ src/ui_splash.cpp    RONDO boot screen
 src/ui*.cpp          frame, seven screens, alarm state in the Active screen
 src/gen/             generated: digit fonts (Rubik 92/52/30) + icon bitmaps
 assets/icons/        33 source PNGs, filename = ID and display name
+assets/3d_print/     STL of the holder (USB-C at the bottom) plus a rendering
 tools/sim/           host simulator plus layout and heap checks
 ```
 
